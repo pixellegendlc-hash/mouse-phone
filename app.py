@@ -1,12 +1,13 @@
+from gevent import monkey; monkey.patch_all()
+
 from flask import Flask, send_from_directory, request
 from flask_socketio import SocketIO, emit
 import os
 
 app = Flask(__name__, static_folder='static')
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'mouse-phone-secret')
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='gevent')
 
-# Tiene traccia dei client connessi per ruolo
 pc_clients = set()
 phone_clients = set()
 
@@ -44,28 +45,24 @@ def on_register(data):
         phone_clients.add(request.sid)
         print(f'[TELEFONO REGISTRATO] {request.sid}')
         emit('registered', {'role': 'phone', 'message': 'Telefono connesso!'})
-        # Avvisa i PC che un telefono si è connesso
         for pc_sid in pc_clients:
             emit('phone_connected', {}, to=pc_sid)
 
 
 @socketio.on('move')
 def on_move(data):
-    """Riceve coordinate normalizzate (0-1) dal telefono, le manda ai PC."""
     for pc_sid in list(pc_clients):
         emit('move', data, to=pc_sid)
 
 
 @socketio.on('click')
 def on_click(data):
-    """Riceve evento click dal telefono, lo manda ai PC."""
     for pc_sid in list(pc_clients):
         emit('click', data, to=pc_sid)
 
 
 @socketio.on('scroll')
 def on_scroll(data):
-    """Riceve evento scroll dal telefono, lo manda ai PC."""
     for pc_sid in list(pc_clients):
         emit('scroll', data, to=pc_sid)
 
