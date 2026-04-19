@@ -15,8 +15,6 @@
       flex-direction: column;
       overflow: hidden;
     }
-
-    /* ── Top bar ── */
     #top-bar {
       padding: 8px 14px;
       background: #12121f;
@@ -35,7 +33,6 @@
     .pill.red    { background:#380008; color:#ff4466; }
     .pill.yellow { background:#382800; color:#ffcc00; }
 
-    /* ── Button row (SOPRA la camera) ── */
     #btn-row {
       padding: 8px 14px;
       background: #12121f;
@@ -53,7 +50,6 @@
     .btn-start:disabled { background: #2a2a40; color: #666; }
     .btn-recalib { background: #2a2a40; color: #aaa; display: none; }
 
-    /* ── Camera ── */
     #cam-wrap {
       position: relative;
       flex: 1;
@@ -61,18 +57,16 @@
       background: #000;
       min-height: 0;
     }
+    /* NESSUN specchio CSS — gestiamo tutto in JS */
     #video {
       width: 100%; height: 100%;
       object-fit: cover; display: block;
-      transform: scaleX(-1);
     }
     #overlay-canvas {
       position: absolute; inset: 0;
       width: 100%; height: 100%;
-      transform: scaleX(-1);
     }
 
-    /* ── Corner markers ── */
     .corner-marker {
       position: absolute;
       width: 54px; height: 54px; border-radius: 50%;
@@ -85,7 +79,6 @@
     .cm-done    { border-color:#00ff88; background:rgba(0,255,136,0.2); color:#00ff88; }
     @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.2)} }
 
-    /* ── Step dots ── */
     #step-dots {
       position: absolute; top: 10px; left: 0; right: 0;
       display: flex; justify-content: center; gap: 10px; z-index: 10;
@@ -94,15 +87,12 @@
     .sdot.done   { background:#00ff88; }
     .sdot.active { background:#ffcc00; animation:pulse 0.8s infinite; }
 
-    /* ── Instruction ── */
     #instr {
       position: absolute; bottom: 22%; left: 6%; right: 6%;
       background: rgba(0,0,0,0.88); border-radius: 14px;
       padding: 14px 18px; text-align: center;
       font-size: 15px; line-height: 1.7; z-index: 10;
     }
-
-    /* ── Hold bar ── */
     #hold-wrap {
       position: absolute; bottom: 14%; left: 10%; right: 10%;
       height: 8px; background: #222; border-radius: 4px;
@@ -113,8 +103,6 @@
       background: linear-gradient(90deg,#6c63ff,#00d4ff);
       border-radius: 4px; transition: width 0.04s linear;
     }
-
-    /* ── Active HUD ── */
     #active-hud {
       position: absolute; top: 8px; left: 8px; right: 8px;
       display: flex; gap: 6px; z-index: 5;
@@ -124,35 +112,27 @@
       padding: 4px 9px; font-size: 11px; border: 1px solid #2a2a40;
     }
     .hbox b { color: #00d4ff; }
-
-    /* ── Cursor dot ── */
     #cdot {
       position: absolute; width: 22px; height: 22px; border-radius: 50%;
       background: rgba(108,99,255,0.85); border: 2px solid #fff;
       transform: translate(-50%,-50%); pointer-events: none; z-index: 6;
       transition: background 0.1s;
     }
-    #cdot.touching {
-      background: rgba(0,255,136,0.9);
-      width: 28px; height: 28px;
-    }
+    #cdot.touching { background: rgba(0,255,136,0.9); width: 28px; height: 28px; }
   </style>
 </head>
 <body>
 
-<!-- Status bar -->
 <div id="top-bar">
   <span id="pill-server" class="pill red">⬤ Disconnesso</span>
   <span id="pill-state"  class="pill yellow">⬤ In attesa</span>
 </div>
 
-<!-- Buttons SOPRA la camera così sono sempre visibili -->
 <div id="btn-row">
   <button class="btn btn-start"   id="btn-start">📷 Avvia Camera</button>
   <button class="btn btn-recalib" id="btn-recalib">🔄 Ricalibra</button>
 </div>
 
-<!-- Camera -->
 <div id="cam-wrap">
   <video id="video" playsinline autoplay muted></video>
   <canvas id="overlay-canvas"></canvas>
@@ -212,7 +192,6 @@ function gaussElim(A,b){
   }
   return x;
 }
-
 function computeH(src,dst){
   const A=[],b=[];
   for(let i=0;i<4;i++){
@@ -223,7 +202,6 @@ function computeH(src,dst){
   const h=gaussElim(A,b);
   return [[h[0],h[1],h[2]],[h[3],h[4],h[5]],[h[6],h[7],1]];
 }
-
 function applyH(H,x,y){
   const w=H[2][0]*x+H[2][1]*y+H[2][2];
   return [(H[0][0]*x+H[0][1]*y+H[0][2])/w,(H[1][0]*x+H[1][1]*y+H[1][2])/w];
@@ -240,7 +218,7 @@ const COOL_MS=450;
 let sx=0.5, sy=0.5;
 const ALPHA=0.35;
 
-// ── CALIBRAZIONE UI ───────────────────────────────────────
+// ── CALIBRAZIONE ──────────────────────────────────────────
 function startCalib(){
   calibPts=[]; H=null; state='calibrating';
   for(let i=0;i<4;i++){
@@ -255,16 +233,15 @@ function startCalib(){
   pill('state','yellow','⬤ Calibrazione');
   updateCalibUI();
 }
-
 function updateCalibUI(){
   const step=calibPts.length;
   if(step>=4){ finishCalib(); return; }
   for(let i=0;i<4;i++){
     const cm=document.getElementById('cm-'+i);
     const sd=document.getElementById('sd'+i);
-    if(i<step)      { cm.className='corner-marker cm-done';   sd.className='sdot done'; }
+    if(i<step)       { cm.className='corner-marker cm-done';   sd.className='sdot done'; }
     else if(i===step){ cm.className='corner-marker cm-active'; sd.className='sdot active'; }
-    else            { cm.className='corner-marker cm-waiting'; sd.className='sdot'; }
+    else             { cm.className='corner-marker cm-waiting'; sd.className='sdot'; }
   }
   const el=document.getElementById('instr');
   el.style.display='block';
@@ -273,7 +250,6 @@ function updateCalibUI(){
     <span style="font-size:12px;color:#aaa;font-weight:normal">tieni fermo 1.5 secondi</span>`;
   document.getElementById('hold-fill').style.width='0%';
 }
-
 function finishCalib(){
   H=computeH(calibPts, [[0,0],[1,0],[1,1],[0,1]]);
   state='active';
@@ -298,6 +274,9 @@ const hands=new Hands({ locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/h
 hands.setOptions({ maxNumHands:1, modelComplexity:0, minDetectionConfidence:0.75, minTrackingConfidence:0.65 });
 hands.onResults(onResults);
 
+// Traccia se usiamo camera frontale o posteriore
+let usingFrontCamera = false;
+
 function onResults(results){
   canvas.width=video.videoWidth||canvas.offsetWidth;
   canvas.height=video.videoHeight||canvas.offsetHeight;
@@ -315,8 +294,9 @@ function onResults(results){
   drawLandmarks(ctx,lm,{color:'#6c63ff',lineWidth:1,radius:3});
 
   const tip=lm[8];
-  const rawX=1-tip.x;
-  const rawY=tip.y;
+  // Camera posteriore: NON specchiare. Camera frontale: specchia.
+  const rawX = usingFrontCamera ? (1 - tip.x) : tip.x;
+  const rawY = tip.y;
 
   // ── CALIBRAZIONE ──
   if(state==='calibrating'){
@@ -386,22 +366,53 @@ function onResults(results){
   }
 }
 
-// ── AVVIO ─────────────────────────────────────────────────
+// ── AVVIO CAMERA con fallback ──────────────────────────────
 async function startCamera(){
-  try {
-    const stream=await navigator.mediaDevices.getUserMedia({
-      video:{facingMode:'environment',width:{ideal:640},height:{ideal:480}}
-    });
-    video.srcObject=stream; await video.play();
-    document.getElementById('btn-start').disabled=true;
-    document.getElementById('btn-start').textContent='✅ Camera attiva';
-    const cam=new Camera(video,{onFrame:async()=>await hands.send({image:video}),width:640,height:480});
-    cam.start();
-    startCalib();
-  } catch(e){ alert('Errore camera: '+e.message); }
+  const btn=document.getElementById('btn-start');
+  btn.disabled=true;
+  btn.textContent='⏳ Avvio...';
+
+  // Prova 1: camera posteriore
+  const attempts = [
+    { video: { facingMode: { exact: 'environment' } } },
+    { video: { facingMode: 'environment' } },
+    { video: true }  // qualsiasi camera disponibile
+  ];
+
+  let stream = null;
+  for(const constraints of attempts){
+    try {
+      stream = await navigator.mediaDevices.getUserMedia(constraints);
+      // Controlla se è frontale o posteriore
+      const track = stream.getVideoTracks()[0];
+      const settings = track.getSettings();
+      usingFrontCamera = settings.facingMode === 'user';
+      break;
+    } catch(e) {
+      console.warn('Tentativo fallito:', constraints, e.message);
+    }
+  }
+
+  if(!stream){
+    btn.disabled=false;
+    btn.textContent='📷 Avvia Camera';
+    alert('Impossibile accedere alla camera.\nProva a chiudere altre app che usano la camera, poi riprova.');
+    return;
+  }
+
+  video.srcObject=stream;
+  await video.play();
+  btn.textContent='✅ Camera attiva';
+
+  const cam=new Camera(video,{
+    onFrame: async()=>await hands.send({image:video}),
+    width:640, height:480
+  });
+  cam.start();
+  startCalib();
 }
 
-document.getElementById('btn-start').addEventListener('click',startCamera);
+document.getElementById('btn-start').addEventListener('click', startCamera);
 document.getElementById('btn-recalib').addEventListener('click',()=>{
   for(let i=0;i<4;i++) document.getElementById('cm-'+i).style.display='flex';
   startCalib();
