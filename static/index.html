@@ -17,29 +17,54 @@
       border-bottom: 1px solid #222; flex-shrink: 0; gap: 8px;
     }
     .pill {
-      padding: 5px 12px; border-radius: 20px;
-      font-size: 12px; font-weight: 600; flex: 1; text-align: center;
+      padding: 5px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 600; flex: 1; text-align: center;
     }
     .pill.green  { background:#003820; color:#00ff88; }
     .pill.red    { background:#380008; color:#ff4466; }
     .pill.yellow { background:#382800; color:#ffcc00; }
+
     #btn-row {
       padding: 8px 14px; background: #12121f;
       display: flex; gap: 8px; flex-shrink: 0; border-bottom: 1px solid #222;
     }
     .btn {
-      flex: 1; padding: 12px; border: none; border-radius: 10px;
-      font-size: 14px; font-weight: 600; cursor: pointer;
+      flex: 1; padding: 11px; border: none; border-radius: 10px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
     }
     .btn-start   { background: linear-gradient(135deg,#6c63ff,#00d4ff); color:#fff; }
     .btn-start:disabled { background: #2a2a40; color: #666; }
     .btn-recalib { background: #2a2a40; color: #aaa; display: none; }
+
+    /* Zoom slider row */
+    #zoom-row {
+      padding: 6px 14px; background: #0f0f1e;
+      display: none; align-items: center; gap: 10px;
+      border-bottom: 1px solid #222; flex-shrink: 0;
+    }
+    #zoom-row label { font-size: 12px; color: #888; white-space: nowrap; }
+    #zoom-slider { flex: 1; accent-color: #6c63ff; }
+    #zoom-val { font-size: 12px; color: #00d4ff; min-width: 30px; text-align: right; }
+
     #cam-wrap {
       position: relative; flex: 1; overflow: hidden;
       background: #111; min-height: 0;
     }
     #video { width:100%; height:100%; object-fit:cover; display:block; }
     #overlay-canvas { position:absolute; inset:0; width:100%; height:100%; }
+
+    /* Guida visiva schermo durante calibrazione */
+    #screen-guide {
+      position: absolute; inset: 10%; border: 2px dashed rgba(255,255,255,0.2);
+      border-radius: 6px; pointer-events: none; z-index: 2;
+      display: none;
+    }
+    #screen-guide::after {
+      content: '← inquadra lo schermo PC qui →';
+      position: absolute; bottom: -22px; left: 0; right: 0;
+      text-align: center; font-size: 11px; color: rgba(255,255,255,0.4);
+    }
+
     .corner-marker {
       position: absolute; width:54px; height:54px; border-radius:50%;
       display:flex; align-items:center; justify-content:center;
@@ -49,6 +74,7 @@
     .cm-active  { border-color:#ffcc00; background:rgba(255,204,0,0.25); color:#ffcc00; animation:pulse 0.8s infinite; }
     .cm-done    { border-color:#00ff88; background:rgba(0,255,136,0.2); color:#00ff88; }
     @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.2)} }
+
     #step-dots {
       position:absolute; top:10px; left:0; right:0;
       display:flex; justify-content:center; gap:10px; z-index:10;
@@ -56,6 +82,7 @@
     .sdot { width:12px; height:12px; border-radius:50%; background:#333; transition:0.3s; }
     .sdot.done   { background:#00ff88; }
     .sdot.active { background:#ffcc00; animation:pulse 0.8s infinite; }
+
     #instr {
       position:absolute; bottom:22%; left:6%; right:6%;
       background:rgba(0,0,0,0.88); border-radius:14px;
@@ -73,7 +100,7 @@
     }
     #active-hud {
       position:absolute; top:8px; left:8px; right:8px;
-      display:flex; gap:6px; z-index:5;
+      display:flex; gap:6px; z-index:5; flex-wrap: wrap;
     }
     .hbox {
       background:rgba(0,0,0,0.75); border-radius:8px;
@@ -99,13 +126,23 @@
   <button class="btn btn-recalib" id="btn-recalib">🔄 Ricalibra</button>
 </div>
 
+<!-- Slider zoom -->
+<div id="zoom-row">
+  <label>🔍 Zoom:</label>
+  <input type="range" id="zoom-slider" min="1" max="5" step="0.1" value="1">
+  <span id="zoom-val">1.0×</span>
+</div>
+
 <div id="cam-wrap">
   <video id="video" playsinline autoplay muted></video>
   <canvas id="overlay-canvas"></canvas>
+  <div id="screen-guide"></div>
+
   <div class="corner-marker cm-waiting" id="cm-0" style="top:8px;left:8px">TL</div>
   <div class="corner-marker cm-waiting" id="cm-1" style="top:8px;right:8px">TR</div>
   <div class="corner-marker cm-waiting" id="cm-2" style="bottom:8px;right:8px">BR</div>
   <div class="corner-marker cm-waiting" id="cm-3" style="bottom:8px;left:8px">BL</div>
+
   <div id="step-dots" style="display:none">
     <div class="sdot" id="sd0"></div><div class="sdot" id="sd1"></div>
     <div class="sdot" id="sd2"></div><div class="sdot" id="sd3"></div>
@@ -120,7 +157,6 @@
   <div id="cdot" style="display:none"></div>
 </div>
 
-<!-- Solo MediaPipe Hands, NO camera_utils -->
 <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
@@ -166,7 +202,28 @@ let calibPts=[],H=null,state='start';
 let holdStart=null; const HOLD_MS=1500;
 let touchActive=false,touchCool=false; const COOL_MS=450;
 let sx=0.5,sy=0.5; const ALPHA=0.35;
+let videoTrack=null;
 
+// ── ZOOM ──────────────────────────────────────────────────
+const zoomSlider=document.getElementById('zoom-slider');
+const zoomVal=document.getElementById('zoom-val');
+
+zoomSlider.addEventListener('input', async ()=>{
+  const z=parseFloat(zoomSlider.value);
+  zoomVal.textContent=z.toFixed(1)+'×';
+  if(videoTrack){
+    const caps=videoTrack.getCapabilities();
+    if(caps.zoom){
+      const minZ=caps.zoom.min||1;
+      const maxZ=caps.zoom.max||5;
+      const clampedZ=Math.max(minZ,Math.min(maxZ,z));
+      try{ await videoTrack.applyConstraints({advanced:[{zoom:clampedZ}]}); }
+      catch(e){ console.warn('Zoom non supportato:',e); }
+    }
+  }
+});
+
+// ── CALIBRAZIONE ──────────────────────────────────────────
 function startCalib(){
   calibPts=[]; H=null; state='calibrating';
   for(let i=0;i<4;i++){
@@ -176,6 +233,7 @@ function startCalib(){
   }
   document.getElementById('step-dots').style.display='flex';
   document.getElementById('hold-wrap').style.display='block';
+  document.getElementById('screen-guide').style.display='block';
   document.getElementById('active-hud').style.display='none';
   document.getElementById('cdot').style.display='none';
   pill('state','yellow','⬤ Calibrazione');
@@ -186,14 +244,14 @@ function updateCalibUI(){
   if(s>=4){ finishCalib(); return; }
   for(let i=0;i<4;i++){
     const cm=document.getElementById('cm-'+i),sd=document.getElementById('sd'+i);
-    if(i<s)      { cm.className='corner-marker cm-done';   sd.className='sdot done'; }
+    if(i<s)       { cm.className='corner-marker cm-done';   sd.className='sdot done'; }
     else if(i===s){ cm.className='corner-marker cm-active'; sd.className='sdot active'; }
-    else         { cm.className='corner-marker cm-waiting'; sd.className='sdot'; }
+    else          { cm.className='corner-marker cm-waiting'; sd.className='sdot'; }
   }
   const el=document.getElementById('instr');
   el.style.display='block';
-  el.innerHTML=`<div style="font-size:32px;margin-bottom:4px">${CEMO[s]}</div>
-    Angolo <b>${CORNERS[s]}</b> dello schermo PC<br>
+  el.innerHTML=`<div style="font-size:30px;margin-bottom:4px">${CEMO[s]}</div>
+    Angolo <b>${CORNERS[s]}</b> dello schermo<br>
     <span style="font-size:12px;color:#aaa;font-weight:normal">tieni il dito fermo 1.5 sec</span>`;
   document.getElementById('hold-fill').style.width='0%';
 }
@@ -203,6 +261,7 @@ function finishCalib(){
   document.getElementById('step-dots').style.display='none';
   document.getElementById('instr').style.display='none';
   document.getElementById('hold-wrap').style.display='none';
+  document.getElementById('screen-guide').style.display='none';
   document.getElementById('active-hud').style.display='flex';
   document.getElementById('cdot').style.display='block';
   document.getElementById('btn-recalib').style.display='flex';
@@ -211,7 +270,7 @@ function finishCalib(){
   setTimeout(()=>{ for(let i=0;i<4;i++) document.getElementById('cm-'+i).style.display='none'; },2500);
 }
 
-// ── MEDIAPIPE HANDS ───────────────────────────────────────
+// ── MEDIAPIPE ─────────────────────────────────────────────
 const video=document.getElementById('video');
 const canvas=document.getElementById('overlay-canvas');
 const ctx=canvas.getContext('2d');
@@ -222,11 +281,9 @@ hands.setOptions({ maxNumHands:1, modelComplexity:0, minDetectionConfidence:0.72
 hands.onResults(onResults);
 
 let processing=false;
-
-// LOOP MANUALE — niente MediaPipe Camera class
 function frameLoop(){
   requestAnimationFrame(frameLoop);
-  if(video.readyState < 2 || processing) return;
+  if(video.readyState<2||processing) return;
   processing=true;
   hands.send({image:video}).then(()=>{ processing=false; }).catch(()=>{ processing=false; });
 }
@@ -248,7 +305,6 @@ function onResults(results){
   drawLandmarks(ctx,lm,{color:'#6c63ff',lineWidth:1,radius:3});
 
   const tip=lm[8];
-  // Camera posteriore: x non va invertita
   const rawX=tip.x, rawY=tip.y;
 
   if(state==='calibrating'){
@@ -309,12 +365,13 @@ async function startCamera(){
   const btn=document.getElementById('btn-start');
   btn.disabled=true; btn.textContent='⏳ Avvio...';
 
-  // Prova più configurazioni in sequenza
+  // Prova a prendere la camera con zoom minimo (grandangolo)
   const configs=[
-    {video:{facingMode:{exact:'environment'}}},
-    {video:{facingMode:'environment'}},
-    {video:{facingMode:'user'}},
-    {video:true}
+    { video:{ facingMode:{exact:'environment'}, zoom:1 } },
+    { video:{ facingMode:{exact:'environment'} } },
+    { video:{ facingMode:'environment' } },
+    { video:{ facingMode:'user' } },
+    { video: true }
   ];
 
   let stream=null;
@@ -325,8 +382,39 @@ async function startCamera(){
 
   if(!stream){
     btn.disabled=false; btn.textContent='📷 Avvia Camera';
-    alert('Camera non disponibile.\n\nProva:\n• Chiudi WhatsApp, Instagram e altre app\n• Ricarica la pagina\n• Controlla i permessi camera in Chrome');
+    alert('Camera non disponibile.\nChiudi altre app e riprova.');
     return;
+  }
+
+  // Salva il track e imposta zoom al minimo
+  videoTrack=stream.getVideoTracks()[0];
+  const caps=videoTrack.getCapabilities();
+  console.log('Camera caps:', JSON.stringify(caps));
+
+  if(caps.zoom){
+    const minZoom=caps.zoom.min||1;
+    const maxZoom=caps.zoom.max||5;
+    // Imposta zoom al minimo per vedere più schermo
+    try{
+      await videoTrack.applyConstraints({advanced:[{zoom:minZoom}]});
+      zoomSlider.min=minZoom;
+      zoomSlider.max=maxZoom;
+      zoomSlider.value=minZoom;
+      zoomSlider.step=(maxZoom-minZoom)/50;
+      zoomVal.textContent=minZoom.toFixed(1)+'×';
+    } catch(e){ console.warn('Zoom applyConstraints fallito:',e); }
+    document.getElementById('zoom-row').style.display='flex';
+  } else {
+    // Zoom API non supportata — mostra slider CSS (zoom visivo non ottico)
+    document.getElementById('zoom-row').style.display='flex';
+    zoomSlider.addEventListener('input', ()=>{
+      const z=parseFloat(zoomSlider.value);
+      zoomVal.textContent=z.toFixed(1)+'×';
+      // Zoom CSS inverso: riduco il video per vedere di più
+      const scale=1/z;
+      video.style.transform=`scale(${scale})`;
+      video.style.transformOrigin='center center';
+    });
   }
 
   video.srcObject=stream;
@@ -334,7 +422,7 @@ async function startCamera(){
   await video.play();
 
   btn.textContent='✅ Camera attiva';
-  frameLoop();   // ← loop manuale, niente Camera class
+  frameLoop();
   startCalib();
 }
 
