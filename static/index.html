@@ -10,125 +10,153 @@
       background: #0a0a14;
       color: #fff;
       font-family: 'Segoe UI', sans-serif;
-      height: 100vh;
-      overflow: hidden;
+      height: 100dvh;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
+
+    /* ── Top bar ── */
     #top-bar {
-      padding: 10px 14px;
+      padding: 8px 14px;
       background: #12121f;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 12px;
       border-bottom: 1px solid #222;
       flex-shrink: 0;
+      gap: 8px;
     }
     .pill {
-      padding: 4px 10px; border-radius: 20px;
-      font-size: 11px; font-weight: 600;
+      padding: 5px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: 600; flex: 1; text-align: center;
     }
     .pill.green  { background:#003820; color:#00ff88; }
     .pill.red    { background:#380008; color:#ff4466; }
     .pill.yellow { background:#382800; color:#ffcc00; }
+
+    /* ── Button row (SOPRA la camera) ── */
+    #btn-row {
+      padding: 8px 14px;
+      background: #12121f;
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+      border-bottom: 1px solid #222;
+    }
+    .btn {
+      flex: 1; padding: 12px; border: none; border-radius: 10px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    .btn:active { opacity: 0.8; }
+    .btn-start   { background: linear-gradient(135deg,#6c63ff,#00d4ff); color:#fff; }
+    .btn-start:disabled { background: #2a2a40; color: #666; }
+    .btn-recalib { background: #2a2a40; color: #aaa; display: none; }
+
+    /* ── Camera ── */
     #cam-wrap {
-      position: relative; flex: 1; overflow: hidden; background: #000;
+      position: relative;
+      flex: 1;
+      overflow: hidden;
+      background: #000;
+      min-height: 0;
     }
     #video {
-      width:100%; height:100%; object-fit:cover; display:block;
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
       transform: scaleX(-1);
     }
     #overlay-canvas {
-      position:absolute; inset:0; width:100%; height:100%;
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
       transform: scaleX(-1);
     }
-    /* Corner markers */
+
+    /* ── Corner markers ── */
     .corner-marker {
       position: absolute;
-      width:56px; height:56px; border-radius:50%;
-      display:flex; align-items:center; justify-content:center;
-      font-size:14px; font-weight:bold; border:3px solid;
+      width: 54px; height: 54px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: bold; border: 3px solid;
       transition: all 0.3s;
     }
-    .cm-waiting { border-color:#444; background:rgba(60,60,60,0.3); color:#444; }
+    .cm-waiting { border-color:#444; background:rgba(60,60,60,0.3); color:#555; }
     .cm-active  { border-color:#ffcc00; background:rgba(255,204,0,0.25); color:#ffcc00; animation:pulse 0.8s infinite; }
     .cm-done    { border-color:#00ff88; background:rgba(0,255,136,0.2); color:#00ff88; }
     @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.2)} }
-    /* Step dots */
+
+    /* ── Step dots ── */
     #step-dots {
-      position:absolute; top:10px; left:0; right:0;
-      display:flex; justify-content:center; gap:10px; z-index:10;
+      position: absolute; top: 10px; left: 0; right: 0;
+      display: flex; justify-content: center; gap: 10px; z-index: 10;
     }
-    .sdot {
-      width:12px; height:12px; border-radius:50%; background:#333; transition:0.3s;
-    }
+    .sdot { width:12px; height:12px; border-radius:50%; background:#333; transition:0.3s; }
     .sdot.done   { background:#00ff88; }
     .sdot.active { background:#ffcc00; animation:pulse 0.8s infinite; }
-    /* Instruction box */
+
+    /* ── Instruction ── */
     #instr {
-      position:absolute; bottom:22%; left:6%; right:6%;
-      background:rgba(0,0,0,0.85); border-radius:14px;
-      padding:14px 18px; text-align:center;
-      font-size:15px; line-height:1.6; z-index:10;
+      position: absolute; bottom: 22%; left: 6%; right: 6%;
+      background: rgba(0,0,0,0.88); border-radius: 14px;
+      padding: 14px 18px; text-align: center;
+      font-size: 15px; line-height: 1.7; z-index: 10;
     }
-    /* Hold bar */
+
+    /* ── Hold bar ── */
     #hold-wrap {
-      position:absolute; bottom:15%; left:10%; right:10%;
-      height:8px; background:#222; border-radius:4px;
-      overflow:hidden; z-index:10;
+      position: absolute; bottom: 14%; left: 10%; right: 10%;
+      height: 8px; background: #222; border-radius: 4px;
+      overflow: hidden; z-index: 10;
     }
     #hold-fill {
-      height:100%; width:0%;
-      background:linear-gradient(90deg,#6c63ff,#00d4ff);
-      border-radius:4px; transition:width 0.04s linear;
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg,#6c63ff,#00d4ff);
+      border-radius: 4px; transition: width 0.04s linear;
     }
-    /* Active HUD */
+
+    /* ── Active HUD ── */
     #active-hud {
-      position:absolute; top:8px; left:8px; right:8px;
-      display:flex; gap:6px; z-index:5;
+      position: absolute; top: 8px; left: 8px; right: 8px;
+      display: flex; gap: 6px; z-index: 5;
     }
     .hbox {
-      background:rgba(0,0,0,0.7); border-radius:8px;
-      padding:4px 9px; font-size:11px; border:1px solid #2a2a40;
+      background: rgba(0,0,0,0.75); border-radius: 8px;
+      padding: 4px 9px; font-size: 11px; border: 1px solid #2a2a40;
     }
-    .hbox b { color:#00d4ff; }
-    /* Cursor dot overlay */
+    .hbox b { color: #00d4ff; }
+
+    /* ── Cursor dot ── */
     #cdot {
-      position:absolute; width:22px; height:22px; border-radius:50%;
-      background:rgba(108,99,255,0.85); border:2px solid #fff;
-      transform:translate(-50%,-50%); pointer-events:none; z-index:6;
-      transition:background 0.1s;
+      position: absolute; width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(108,99,255,0.85); border: 2px solid #fff;
+      transform: translate(-50%,-50%); pointer-events: none; z-index: 6;
+      transition: background 0.1s;
     }
     #cdot.touching {
-      background:rgba(0,255,136,0.9);
-      width:28px; height:28px;
+      background: rgba(0,255,136,0.9);
+      width: 28px; height: 28px;
     }
-    #bottom-panel {
-      flex-shrink:0; background:#12121f;
-      padding:10px 14px; border-top:1px solid #222;
-      display:flex; gap:8px;
-    }
-    .btn {
-      flex:1; padding:11px; border:none; border-radius:10px;
-      font-size:13px; font-weight:600; cursor:pointer;
-    }
-    .btn-start   { background:linear-gradient(135deg,#6c63ff,#00d4ff); color:#fff; }
-    .btn-recalib { background:#2a2a40; color:#aaa; display:none; }
   </style>
 </head>
 <body>
 
+<!-- Status bar -->
 <div id="top-bar">
   <span id="pill-server" class="pill red">⬤ Disconnesso</span>
   <span id="pill-state"  class="pill yellow">⬤ In attesa</span>
 </div>
 
+<!-- Buttons SOPRA la camera così sono sempre visibili -->
+<div id="btn-row">
+  <button class="btn btn-start"   id="btn-start">📷 Avvia Camera</button>
+  <button class="btn btn-recalib" id="btn-recalib">🔄 Ricalibra</button>
+</div>
+
+<!-- Camera -->
 <div id="cam-wrap">
   <video id="video" playsinline autoplay muted></video>
   <canvas id="overlay-canvas"></canvas>
 
-  <!-- 4 corner markers -->
   <div class="corner-marker cm-waiting" id="cm-0" style="top:8px;left:8px">TL</div>
   <div class="corner-marker cm-waiting" id="cm-1" style="top:8px;right:8px">TR</div>
   <div class="corner-marker cm-waiting" id="cm-2" style="bottom:8px;right:8px">BR</div>
@@ -141,17 +169,13 @@
 
   <div id="instr" style="display:none"></div>
   <div id="hold-wrap" style="display:none"><div id="hold-fill"></div></div>
+
   <div id="active-hud" style="display:none">
     <div class="hbox">X:<b id="hx">—</b></div>
     <div class="hbox">Y:<b id="hy">—</b></div>
     <div class="hbox" id="hg">🖐 hover</div>
   </div>
   <div id="cdot" style="display:none"></div>
-</div>
-
-<div id="bottom-panel">
-  <button class="btn btn-start"   id="btn-start">📷 Avvia Camera</button>
-  <button class="btn btn-recalib" id="btn-recalib">🔄 Ricalibra</button>
 </div>
 
 <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
@@ -161,9 +185,8 @@
 <script>
 // ── SOCKET ────────────────────────────────────────────────
 const socket = io({ transports:['websocket'] });
-socket.on('connect',    () => pill('server','green','⬤ Server OK'));
+socket.on('connect',    () => { pill('server','green','⬤ Server OK'); socket.emit('register',{role:'phone'}); });
 socket.on('disconnect', () => pill('server','red','⬤ Disconnesso'));
-socket.on('connect',    () => socket.emit('register',{role:'phone'}));
 
 function pill(id,cls,txt){
   const e=document.getElementById('pill-'+id);
@@ -239,9 +262,9 @@ function updateCalibUI(){
   for(let i=0;i<4;i++){
     const cm=document.getElementById('cm-'+i);
     const sd=document.getElementById('sd'+i);
-    if(i<step)     { cm.className='corner-marker cm-done';    sd.className='sdot done'; }
-    else if(i===step){ cm.className='corner-marker cm-active';  sd.className='sdot active'; }
-    else           { cm.className='corner-marker cm-waiting';  sd.className='sdot'; }
+    if(i<step)      { cm.className='corner-marker cm-done';   sd.className='sdot done'; }
+    else if(i===step){ cm.className='corner-marker cm-active'; sd.className='sdot active'; }
+    else            { cm.className='corner-marker cm-waiting'; sd.className='sdot'; }
   }
   const el=document.getElementById('instr');
   el.style.display='block';
@@ -252,7 +275,6 @@ function updateCalibUI(){
 }
 
 function finishCalib(){
-  // src = punti camera → dst = angoli schermo normalizzati 0-1
   H=computeH(calibPts, [[0,0],[1,0],[1,1],[0,1]]);
   state='active';
   document.getElementById('step-dots').style.display='none';
@@ -293,12 +315,11 @@ function onResults(results){
   drawLandmarks(ctx,lm,{color:'#6c63ff',lineWidth:1,radius:3});
 
   const tip=lm[8];
-  const rawX=1-tip.x; // specchio
+  const rawX=1-tip.x;
   const rawY=tip.y;
 
   // ── CALIBRAZIONE ──
   if(state==='calibrating'){
-    // Cerchio giallo sulla punta
     ctx.beginPath();
     ctx.arc(rawX*canvas.width, rawY*canvas.height, 14, 0, Math.PI*2);
     ctx.fillStyle='rgba(255,204,0,0.85)'; ctx.fill();
@@ -326,24 +347,19 @@ function onResults(results){
   // ── ACTIVE ──
   if(state!=='active'||!H) return;
 
-  // Smooth
   sx=sx+ALPHA*(rawX-sx);
   sy=sy+ALPHA*(rawY-sy);
 
-  // Homography → coordinate schermo
   const [mx,my]=applyH(H,sx,sy);
   const inScreen=mx>=-0.05&&mx<=1.05&&my>=-0.05&&my<=1.05;
 
   document.getElementById('hx').textContent=mx.toFixed(3);
   document.getElementById('hy').textContent=my.toFixed(3);
 
-  // Posizione visiva del cursore sul canvas
   cdot.style.left=(rawX*100)+'%';
   cdot.style.top=(rawY*100)+'%';
 
-  // ── Rilevamento tocco ──
-  // z MediaPipe: negativo = vicino alla camera. Quando si estende verso lo schermo → z positivo
-  const relZ=tip.z - lm[0].z; // relativo al polso
+  const relZ=tip.z - lm[0].z;
   const pinch=Math.hypot(tip.x-lm[4].x, tip.y-lm[4].y) < 0.065;
   const isTouching=(relZ>0.07&&inScreen)||pinch;
 
