@@ -7,23 +7,14 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background: #0a0a14;
-      color: #fff;
+      background: #0a0a14; color: #fff;
       font-family: 'Segoe UI', sans-serif;
-      height: 100dvh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+      height: 100dvh; display: flex; flex-direction: column; overflow: hidden;
     }
     #top-bar {
-      padding: 8px 14px;
-      background: #12121f;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #222;
-      flex-shrink: 0;
-      gap: 8px;
+      padding: 8px 14px; background: #12121f;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid #222; flex-shrink: 0; gap: 8px;
     }
     .pill {
       padding: 5px 12px; border-radius: 20px;
@@ -32,93 +23,69 @@
     .pill.green  { background:#003820; color:#00ff88; }
     .pill.red    { background:#380008; color:#ff4466; }
     .pill.yellow { background:#382800; color:#ffcc00; }
-
     #btn-row {
-      padding: 8px 14px;
-      background: #12121f;
-      display: flex;
-      gap: 8px;
-      flex-shrink: 0;
-      border-bottom: 1px solid #222;
+      padding: 8px 14px; background: #12121f;
+      display: flex; gap: 8px; flex-shrink: 0; border-bottom: 1px solid #222;
     }
     .btn {
       flex: 1; padding: 12px; border: none; border-radius: 10px;
       font-size: 14px; font-weight: 600; cursor: pointer;
     }
-    .btn:active { opacity: 0.8; }
     .btn-start   { background: linear-gradient(135deg,#6c63ff,#00d4ff); color:#fff; }
     .btn-start:disabled { background: #2a2a40; color: #666; }
     .btn-recalib { background: #2a2a40; color: #aaa; display: none; }
-
     #cam-wrap {
-      position: relative;
-      flex: 1;
-      overflow: hidden;
-      background: #000;
-      min-height: 0;
+      position: relative; flex: 1; overflow: hidden;
+      background: #111; min-height: 0;
     }
-    /* NESSUN specchio CSS — gestiamo tutto in JS */
-    #video {
-      width: 100%; height: 100%;
-      object-fit: cover; display: block;
-    }
-    #overlay-canvas {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
-    }
-
+    #video { width:100%; height:100%; object-fit:cover; display:block; }
+    #overlay-canvas { position:absolute; inset:0; width:100%; height:100%; }
     .corner-marker {
-      position: absolute;
-      width: 54px; height: 54px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 13px; font-weight: bold; border: 3px solid;
-      transition: all 0.3s;
+      position: absolute; width:54px; height:54px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:13px; font-weight:bold; border:3px solid; transition:all 0.3s;
     }
     .cm-waiting { border-color:#444; background:rgba(60,60,60,0.3); color:#555; }
     .cm-active  { border-color:#ffcc00; background:rgba(255,204,0,0.25); color:#ffcc00; animation:pulse 0.8s infinite; }
     .cm-done    { border-color:#00ff88; background:rgba(0,255,136,0.2); color:#00ff88; }
     @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.2)} }
-
     #step-dots {
-      position: absolute; top: 10px; left: 0; right: 0;
-      display: flex; justify-content: center; gap: 10px; z-index: 10;
+      position:absolute; top:10px; left:0; right:0;
+      display:flex; justify-content:center; gap:10px; z-index:10;
     }
     .sdot { width:12px; height:12px; border-radius:50%; background:#333; transition:0.3s; }
     .sdot.done   { background:#00ff88; }
     .sdot.active { background:#ffcc00; animation:pulse 0.8s infinite; }
-
     #instr {
-      position: absolute; bottom: 22%; left: 6%; right: 6%;
-      background: rgba(0,0,0,0.88); border-radius: 14px;
-      padding: 14px 18px; text-align: center;
-      font-size: 15px; line-height: 1.7; z-index: 10;
+      position:absolute; bottom:22%; left:6%; right:6%;
+      background:rgba(0,0,0,0.88); border-radius:14px;
+      padding:14px 18px; text-align:center;
+      font-size:15px; line-height:1.7; z-index:10;
     }
     #hold-wrap {
-      position: absolute; bottom: 14%; left: 10%; right: 10%;
-      height: 8px; background: #222; border-radius: 4px;
-      overflow: hidden; z-index: 10;
+      position:absolute; bottom:14%; left:10%; right:10%;
+      height:8px; background:#222; border-radius:4px; overflow:hidden; z-index:10;
     }
     #hold-fill {
-      height: 100%; width: 0%;
-      background: linear-gradient(90deg,#6c63ff,#00d4ff);
-      border-radius: 4px; transition: width 0.04s linear;
+      height:100%; width:0%;
+      background:linear-gradient(90deg,#6c63ff,#00d4ff);
+      border-radius:4px; transition:width 0.04s linear;
     }
     #active-hud {
-      position: absolute; top: 8px; left: 8px; right: 8px;
-      display: flex; gap: 6px; z-index: 5;
+      position:absolute; top:8px; left:8px; right:8px;
+      display:flex; gap:6px; z-index:5;
     }
     .hbox {
-      background: rgba(0,0,0,0.75); border-radius: 8px;
-      padding: 4px 9px; font-size: 11px; border: 1px solid #2a2a40;
+      background:rgba(0,0,0,0.75); border-radius:8px;
+      padding:4px 9px; font-size:11px; border:1px solid #2a2a40;
     }
-    .hbox b { color: #00d4ff; }
+    .hbox b { color:#00d4ff; }
     #cdot {
-      position: absolute; width: 22px; height: 22px; border-radius: 50%;
-      background: rgba(108,99,255,0.85); border: 2px solid #fff;
-      transform: translate(-50%,-50%); pointer-events: none; z-index: 6;
-      transition: background 0.1s;
+      position:absolute; width:22px; height:22px; border-radius:50%;
+      background:rgba(108,99,255,0.85); border:2px solid #fff;
+      transform:translate(-50%,-50%); pointer-events:none; z-index:6;
     }
-    #cdot.touching { background: rgba(0,255,136,0.9); width: 28px; height: 28px; }
+    #cdot.touching { background:rgba(0,255,136,0.9); width:28px; height:28px; }
   </style>
 </head>
 <body>
@@ -127,7 +94,6 @@
   <span id="pill-server" class="pill red">⬤ Disconnesso</span>
   <span id="pill-state"  class="pill yellow">⬤ In attesa</span>
 </div>
-
 <div id="btn-row">
   <button class="btn btn-start"   id="btn-start">📷 Avvia Camera</button>
   <button class="btn btn-recalib" id="btn-recalib">🔄 Ricalibra</button>
@@ -136,20 +102,16 @@
 <div id="cam-wrap">
   <video id="video" playsinline autoplay muted></video>
   <canvas id="overlay-canvas"></canvas>
-
   <div class="corner-marker cm-waiting" id="cm-0" style="top:8px;left:8px">TL</div>
   <div class="corner-marker cm-waiting" id="cm-1" style="top:8px;right:8px">TR</div>
   <div class="corner-marker cm-waiting" id="cm-2" style="bottom:8px;right:8px">BR</div>
   <div class="corner-marker cm-waiting" id="cm-3" style="bottom:8px;left:8px">BL</div>
-
   <div id="step-dots" style="display:none">
     <div class="sdot" id="sd0"></div><div class="sdot" id="sd1"></div>
     <div class="sdot" id="sd2"></div><div class="sdot" id="sd3"></div>
   </div>
-
   <div id="instr" style="display:none"></div>
   <div id="hold-wrap" style="display:none"><div id="hold-fill"></div></div>
-
   <div id="active-hud" style="display:none">
     <div class="hbox">X:<b id="hx">—</b></div>
     <div class="hbox">Y:<b id="hy">—</b></div>
@@ -158,38 +120,28 @@
   <div id="cdot" style="display:none"></div>
 </div>
 
+<!-- Solo MediaPipe Hands, NO camera_utils -->
 <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
 <script>
 // ── SOCKET ────────────────────────────────────────────────
 const socket = io({ transports:['websocket'] });
-socket.on('connect',    () => { pill('server','green','⬤ Server OK'); socket.emit('register',{role:'phone'}); });
-socket.on('disconnect', () => pill('server','red','⬤ Disconnesso'));
-
-function pill(id,cls,txt){
-  const e=document.getElementById('pill-'+id);
-  e.className='pill '+cls; e.textContent=txt;
-}
+socket.on('connect', ()=>{ pill('server','green','⬤ Server OK'); socket.emit('register',{role:'phone'}); });
+socket.on('disconnect', ()=>pill('server','red','⬤ Disconnesso'));
+function pill(id,cls,txt){ const e=document.getElementById('pill-'+id); e.className='pill '+cls; e.textContent=txt; }
 
 // ── HOMOGRAPHY ────────────────────────────────────────────
 function gaussElim(A,b){
-  const n=b.length, M=A.map((r,i)=>[...r,b[i]]);
+  const n=b.length,M=A.map((r,i)=>[...r,b[i]]);
   for(let c=0;c<n;c++){
     let mx=c;
     for(let r=c+1;r<n;r++) if(Math.abs(M[r][c])>Math.abs(M[mx][c])) mx=r;
     [M[c],M[mx]]=[M[mx],M[c]];
-    for(let r=c+1;r<n;r++){
-      const f=M[r][c]/M[c][c];
-      for(let j=c;j<=n;j++) M[r][j]-=f*M[c][j];
-    }
+    for(let r=c+1;r<n;r++){ const f=M[r][c]/M[c][c]; for(let j=c;j<=n;j++) M[r][j]-=f*M[c][j]; }
   }
   const x=new Array(n).fill(0);
-  for(let i=n-1;i>=0;i--){
-    x[i]=M[i][n]/M[i][i];
-    for(let j=i+1;j<n;j++) x[i]-=M[i][j]*x[j]/M[i][i];
-  }
+  for(let i=n-1;i>=0;i--){ x[i]=M[i][n]/M[i][i]; for(let j=i+1;j<n;j++) x[i]-=M[i][j]*x[j]/M[i][i]; }
   return x;
 }
 function computeH(src,dst){
@@ -208,22 +160,18 @@ function applyH(H,x,y){
 }
 
 // ── STATO ─────────────────────────────────────────────────
-const CORNERS    = ['Top-Left ↖','Top-Right ↗','Bottom-Right ↘','Bottom-Left ↙'];
-const CORNER_EMO = ['↖','↗','↘','↙'];
-let calibPts=[], H=null, state='start';
-let holdStart=null;
-const HOLD_MS=1500;
-let touchActive=false, touchCool=false;
-const COOL_MS=450;
-let sx=0.5, sy=0.5;
-const ALPHA=0.35;
+const CORNERS=['Top-Left ↖','Top-Right ↗','Bottom-Right ↘','Bottom-Left ↙'];
+const CEMO=['↖','↗','↘','↙'];
+let calibPts=[],H=null,state='start';
+let holdStart=null; const HOLD_MS=1500;
+let touchActive=false,touchCool=false; const COOL_MS=450;
+let sx=0.5,sy=0.5; const ALPHA=0.35;
 
-// ── CALIBRAZIONE ──────────────────────────────────────────
 function startCalib(){
   calibPts=[]; H=null; state='calibrating';
   for(let i=0;i<4;i++){
-    const cm=document.getElementById('cm-'+i);
-    cm.style.display='flex'; cm.className='corner-marker cm-waiting';
+    document.getElementById('cm-'+i).style.display='flex';
+    document.getElementById('cm-'+i).className='corner-marker cm-waiting';
     document.getElementById('sd'+i).className='sdot';
   }
   document.getElementById('step-dots').style.display='flex';
@@ -234,24 +182,23 @@ function startCalib(){
   updateCalibUI();
 }
 function updateCalibUI(){
-  const step=calibPts.length;
-  if(step>=4){ finishCalib(); return; }
+  const s=calibPts.length;
+  if(s>=4){ finishCalib(); return; }
   for(let i=0;i<4;i++){
-    const cm=document.getElementById('cm-'+i);
-    const sd=document.getElementById('sd'+i);
-    if(i<step)       { cm.className='corner-marker cm-done';   sd.className='sdot done'; }
-    else if(i===step){ cm.className='corner-marker cm-active'; sd.className='sdot active'; }
-    else             { cm.className='corner-marker cm-waiting'; sd.className='sdot'; }
+    const cm=document.getElementById('cm-'+i),sd=document.getElementById('sd'+i);
+    if(i<s)      { cm.className='corner-marker cm-done';   sd.className='sdot done'; }
+    else if(i===s){ cm.className='corner-marker cm-active'; sd.className='sdot active'; }
+    else         { cm.className='corner-marker cm-waiting'; sd.className='sdot'; }
   }
   const el=document.getElementById('instr');
   el.style.display='block';
-  el.innerHTML=`<div style="font-size:32px;margin-bottom:4px">${CORNER_EMO[step]}</div>
-    Punta il dito all'angolo <b>${CORNERS[step]}</b> dello schermo PC<br>
-    <span style="font-size:12px;color:#aaa;font-weight:normal">tieni fermo 1.5 secondi</span>`;
+  el.innerHTML=`<div style="font-size:32px;margin-bottom:4px">${CEMO[s]}</div>
+    Angolo <b>${CORNERS[s]}</b> dello schermo PC<br>
+    <span style="font-size:12px;color:#aaa;font-weight:normal">tieni il dito fermo 1.5 sec</span>`;
   document.getElementById('hold-fill').style.width='0%';
 }
 function finishCalib(){
-  H=computeH(calibPts, [[0,0],[1,0],[1,1],[0,1]]);
+  H=computeH(calibPts,[[0,0],[1,0],[1,1],[0,1]]);
   state='active';
   document.getElementById('step-dots').style.display='none';
   document.getElementById('instr').style.display='none';
@@ -264,18 +211,25 @@ function finishCalib(){
   setTimeout(()=>{ for(let i=0;i<4;i++) document.getElementById('cm-'+i).style.display='none'; },2500);
 }
 
-// ── MEDIAPIPE ─────────────────────────────────────────────
+// ── MEDIAPIPE HANDS ───────────────────────────────────────
 const video=document.getElementById('video');
 const canvas=document.getElementById('overlay-canvas');
 const ctx=canvas.getContext('2d');
 const cdot=document.getElementById('cdot');
 
 const hands=new Hands({ locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
-hands.setOptions({ maxNumHands:1, modelComplexity:0, minDetectionConfidence:0.75, minTrackingConfidence:0.65 });
+hands.setOptions({ maxNumHands:1, modelComplexity:0, minDetectionConfidence:0.72, minTrackingConfidence:0.65 });
 hands.onResults(onResults);
 
-// Traccia se usiamo camera frontale o posteriore
-let usingFrontCamera = false;
+let processing=false;
+
+// LOOP MANUALE — niente MediaPipe Camera class
+function frameLoop(){
+  requestAnimationFrame(frameLoop);
+  if(video.readyState < 2 || processing) return;
+  processing=true;
+  hands.send({image:video}).then(()=>{ processing=false; }).catch(()=>{ processing=false; });
+}
 
 function onResults(results){
   canvas.width=video.videoWidth||canvas.offsetWidth;
@@ -285,7 +239,7 @@ function onResults(results){
   if(!results.multiHandLandmarks?.length){
     holdStart=null;
     document.getElementById('hold-fill').style.width='0%';
-    if(state==='active') document.getElementById('hg').textContent='👋 nessuna mano';
+    if(state==='active') document.getElementById('hg').textContent='👋 mano non vista';
     return;
   }
 
@@ -294,53 +248,39 @@ function onResults(results){
   drawLandmarks(ctx,lm,{color:'#6c63ff',lineWidth:1,radius:3});
 
   const tip=lm[8];
-  // Camera posteriore: NON specchiare. Camera frontale: specchia.
-  const rawX = usingFrontCamera ? (1 - tip.x) : tip.x;
-  const rawY = tip.y;
+  // Camera posteriore: x non va invertita
+  const rawX=tip.x, rawY=tip.y;
 
-  // ── CALIBRAZIONE ──
   if(state==='calibrating'){
     ctx.beginPath();
-    ctx.arc(rawX*canvas.width, rawY*canvas.height, 14, 0, Math.PI*2);
+    ctx.arc(rawX*canvas.width,rawY*canvas.height,14,0,Math.PI*2);
     ctx.fillStyle='rgba(255,204,0,0.85)'; ctx.fill();
-
     if(!holdStart){
       holdStart={t:Date.now(),x:rawX,y:rawY};
     } else {
-      const moved=Math.hypot(rawX-holdStart.x, rawY-holdStart.y);
+      const moved=Math.hypot(rawX-holdStart.x,rawY-holdStart.y);
       if(moved>0.035){
         holdStart={t:Date.now(),x:rawX,y:rawY};
         document.getElementById('hold-fill').style.width='0%';
       } else {
         const elapsed=Date.now()-holdStart.t;
         document.getElementById('hold-fill').style.width=Math.min(100,(elapsed/HOLD_MS)*100)+'%';
-        if(elapsed>=HOLD_MS){
-          calibPts.push([rawX,rawY]);
-          holdStart=null;
-          updateCalibUI();
-        }
+        if(elapsed>=HOLD_MS){ calibPts.push([rawX,rawY]); holdStart=null; updateCalibUI(); }
       }
     }
     return;
   }
 
-  // ── ACTIVE ──
   if(state!=='active'||!H) return;
-
-  sx=sx+ALPHA*(rawX-sx);
-  sy=sy+ALPHA*(rawY-sy);
-
+  sx=sx+ALPHA*(rawX-sx); sy=sy+ALPHA*(rawY-sy);
   const [mx,my]=applyH(H,sx,sy);
   const inScreen=mx>=-0.05&&mx<=1.05&&my>=-0.05&&my<=1.05;
-
   document.getElementById('hx').textContent=mx.toFixed(3);
   document.getElementById('hy').textContent=my.toFixed(3);
+  cdot.style.left=(rawX*100)+'%'; cdot.style.top=(rawY*100)+'%';
 
-  cdot.style.left=(rawX*100)+'%';
-  cdot.style.top=(rawY*100)+'%';
-
-  const relZ=tip.z - lm[0].z;
-  const pinch=Math.hypot(tip.x-lm[4].x, tip.y-lm[4].y) < 0.065;
+  const relZ=tip.z-lm[0].z;
+  const pinch=Math.hypot(tip.x-lm[4].x,tip.y-lm[4].y)<0.065;
   const isTouching=(relZ>0.07&&inScreen)||pinch;
 
   if(isTouching){
@@ -348,15 +288,13 @@ function onResults(results){
     document.getElementById('hg').textContent='👆 TOCCO!';
     if(!touchActive&&!touchCool&&inScreen){
       touchActive=true; touchCool=true;
-      const cx=Math.max(0,Math.min(1,mx));
-      const cy=Math.max(0,Math.min(1,my));
+      const cx=Math.max(0,Math.min(1,mx)), cy=Math.max(0,Math.min(1,my));
       socket.emit('move',{x:cx,y:cy});
       socket.emit('click',{button:'left',x:cx,y:cy});
       setTimeout(()=>{ touchCool=false; },COOL_MS);
     }
   } else {
-    cdot.classList.remove('touching');
-    touchActive=false;
+    cdot.classList.remove('touching'); touchActive=false;
     if(inScreen){
       document.getElementById('hg').textContent='☝️ hover';
       socket.emit('move',{x:Math.max(0,Math.min(1,mx)),y:Math.max(0,Math.min(1,my))});
@@ -366,53 +304,41 @@ function onResults(results){
   }
 }
 
-// ── AVVIO CAMERA con fallback ──────────────────────────────
+// ── AVVIO CAMERA ──────────────────────────────────────────
 async function startCamera(){
   const btn=document.getElementById('btn-start');
-  btn.disabled=true;
-  btn.textContent='⏳ Avvio...';
+  btn.disabled=true; btn.textContent='⏳ Avvio...';
 
-  // Prova 1: camera posteriore
-  const attempts = [
-    { video: { facingMode: { exact: 'environment' } } },
-    { video: { facingMode: 'environment' } },
-    { video: true }  // qualsiasi camera disponibile
+  // Prova più configurazioni in sequenza
+  const configs=[
+    {video:{facingMode:{exact:'environment'}}},
+    {video:{facingMode:'environment'}},
+    {video:{facingMode:'user'}},
+    {video:true}
   ];
 
-  let stream = null;
-  for(const constraints of attempts){
-    try {
-      stream = await navigator.mediaDevices.getUserMedia(constraints);
-      // Controlla se è frontale o posteriore
-      const track = stream.getVideoTracks()[0];
-      const settings = track.getSettings();
-      usingFrontCamera = settings.facingMode === 'user';
-      break;
-    } catch(e) {
-      console.warn('Tentativo fallito:', constraints, e.message);
-    }
+  let stream=null;
+  for(const cfg of configs){
+    try{ stream=await navigator.mediaDevices.getUserMedia(cfg); break; }
+    catch(e){ console.warn('Tentativo fallito:',e.message); }
   }
 
   if(!stream){
-    btn.disabled=false;
-    btn.textContent='📷 Avvia Camera';
-    alert('Impossibile accedere alla camera.\nProva a chiudere altre app che usano la camera, poi riprova.');
+    btn.disabled=false; btn.textContent='📷 Avvia Camera';
+    alert('Camera non disponibile.\n\nProva:\n• Chiudi WhatsApp, Instagram e altre app\n• Ricarica la pagina\n• Controlla i permessi camera in Chrome');
     return;
   }
 
   video.srcObject=stream;
+  await new Promise(res=>{ video.onloadedmetadata=res; });
   await video.play();
-  btn.textContent='✅ Camera attiva';
 
-  const cam=new Camera(video,{
-    onFrame: async()=>await hands.send({image:video}),
-    width:640, height:480
-  });
-  cam.start();
+  btn.textContent='✅ Camera attiva';
+  frameLoop();   // ← loop manuale, niente Camera class
   startCalib();
 }
 
-document.getElementById('btn-start').addEventListener('click', startCamera);
+document.getElementById('btn-start').addEventListener('click',startCamera);
 document.getElementById('btn-recalib').addEventListener('click',()=>{
   for(let i=0;i<4;i++) document.getElementById('cm-'+i).style.display='flex';
   startCalib();
