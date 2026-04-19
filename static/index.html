@@ -5,68 +5,75 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>👆 Touch Screen</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      background: #0a0a14; color: #fff;
-      font-family: 'Segoe UI', sans-serif;
-      height: 100dvh; display: flex; flex-direction: column; overflow: hidden;
+      background:#0a0a14; color:#fff;
+      font-family:'Segoe UI',sans-serif;
+      height:100dvh; display:flex; flex-direction:column; overflow:hidden;
     }
     #top-bar {
-      padding: 8px 14px; background: #12121f;
-      display: flex; justify-content: space-between; align-items: center;
-      border-bottom: 1px solid #222; flex-shrink: 0; gap: 8px;
+      padding:8px 14px; background:#12121f;
+      display:flex; justify-content:space-between; align-items:center;
+      border-bottom:1px solid #222; flex-shrink:0; gap:8px;
     }
     .pill {
-      padding: 5px 10px; border-radius: 20px;
-      font-size: 11px; font-weight: 600; flex: 1; text-align: center;
+      padding:5px 10px; border-radius:20px;
+      font-size:11px; font-weight:600; flex:1; text-align:center;
     }
     .pill.green  { background:#003820; color:#00ff88; }
     .pill.red    { background:#380008; color:#ff4466; }
     .pill.yellow { background:#382800; color:#ffcc00; }
 
     #btn-row {
-      padding: 8px 14px; background: #12121f;
-      display: flex; gap: 8px; flex-shrink: 0; border-bottom: 1px solid #222;
+      padding:8px 14px; background:#12121f;
+      display:flex; gap:8px; flex-shrink:0; border-bottom:1px solid #222;
     }
     .btn {
-      flex: 1; padding: 11px; border: none; border-radius: 10px;
-      font-size: 13px; font-weight: 600; cursor: pointer;
+      flex:1; padding:11px; border:none; border-radius:10px;
+      font-size:13px; font-weight:600; cursor:pointer;
     }
-    .btn-start   { background: linear-gradient(135deg,#6c63ff,#00d4ff); color:#fff; }
-    .btn-start:disabled { background: #2a2a40; color: #666; }
-    .btn-recalib { background: #2a2a40; color: #aaa; display: none; }
+    .btn-start   { background:linear-gradient(135deg,#6c63ff,#00d4ff); color:#fff; }
+    .btn-start:disabled { background:#2a2a40; color:#666; }
+    .btn-recalib { background:#2a2a40; color:#aaa; display:none; }
 
-    /* Zoom slider row */
     #zoom-row {
-      padding: 6px 14px; background: #0f0f1e;
-      display: none; align-items: center; gap: 10px;
-      border-bottom: 1px solid #222; flex-shrink: 0;
+      padding:6px 14px; background:#0f0f1e;
+      display:none; align-items:center; gap:10px;
+      border-bottom:1px solid #222; flex-shrink:0;
     }
-    #zoom-row label { font-size: 12px; color: #888; white-space: nowrap; }
-    #zoom-slider { flex: 1; accent-color: #6c63ff; }
-    #zoom-val { font-size: 12px; color: #00d4ff; min-width: 30px; text-align: right; }
+    #zoom-row label { font-size:12px; color:#888; white-space:nowrap; }
+    #zoom-slider { flex:1; accent-color:#6c63ff; }
+    #zoom-val { font-size:12px; color:#00d4ff; min-width:30px; text-align:right; }
+
+    /* Sensibilità tap */
+    #sens-row {
+      padding:6px 14px; background:#0f0f1e;
+      display:none; align-items:center; gap:10px;
+      border-bottom:1px solid #222; flex-shrink:0;
+    }
+    #sens-row label { font-size:12px; color:#888; white-space:nowrap; }
+    #sens-slider { flex:1; accent-color:#ff6b6b; }
+    #sens-val { font-size:12px; color:#ff6b6b; min-width:50px; text-align:right; }
 
     #cam-wrap {
-      position: relative; flex: 1; overflow: hidden;
-      background: #111; min-height: 0;
+      position:relative; flex:1; overflow:hidden;
+      background:#111; min-height:0;
     }
     #video { width:100%; height:100%; object-fit:cover; display:block; }
     #overlay-canvas { position:absolute; inset:0; width:100%; height:100%; }
 
-    /* Guida visiva schermo durante calibrazione */
     #screen-guide {
-      position: absolute; inset: 10%; border: 2px dashed rgba(255,255,255,0.2);
-      border-radius: 6px; pointer-events: none; z-index: 2;
-      display: none;
+      position:absolute; inset:10%; border:2px dashed rgba(255,255,255,0.2);
+      border-radius:6px; pointer-events:none; z-index:2; display:none;
     }
     #screen-guide::after {
-      content: '← inquadra lo schermo PC qui →';
-      position: absolute; bottom: -22px; left: 0; right: 0;
-      text-align: center; font-size: 11px; color: rgba(255,255,255,0.4);
+      content:'inquadra lo schermo PC';
+      position:absolute; bottom:-22px; left:0; right:0;
+      text-align:center; font-size:11px; color:rgba(255,255,255,0.4);
     }
 
     .corner-marker {
-      position: absolute; width:54px; height:54px; border-radius:50%;
+      position:absolute; width:54px; height:54px; border-radius:50%;
       display:flex; align-items:center; justify-content:center;
       font-size:13px; font-weight:bold; border:3px solid; transition:all 0.3s;
     }
@@ -100,19 +107,30 @@
     }
     #active-hud {
       position:absolute; top:8px; left:8px; right:8px;
-      display:flex; gap:6px; z-index:5; flex-wrap: wrap;
+      display:flex; gap:6px; z-index:5; flex-wrap:wrap;
     }
     .hbox {
-      background:rgba(0,0,0,0.75); border-radius:8px;
+      background:rgba(0,0,0,0.78); border-radius:8px;
       padding:4px 9px; font-size:11px; border:1px solid #2a2a40;
     }
     .hbox b { color:#00d4ff; }
+
+    /* Cursore con ring di feedback */
     #cdot {
-      position:absolute; width:22px; height:22px; border-radius:50%;
-      background:rgba(108,99,255,0.85); border:2px solid #fff;
+      position:absolute; width:24px; height:24px; border-radius:50%;
+      background:rgba(108,99,255,0.8); border:2px solid rgba(255,255,255,0.8);
       transform:translate(-50%,-50%); pointer-events:none; z-index:6;
+      transition:background 0.08s, width 0.08s, height 0.08s;
     }
-    #cdot.touching { background:rgba(0,255,136,0.9); width:28px; height:28px; }
+    #cdot.ready   { background:rgba(255,200,0,0.85); border-color:#ffcc00; }
+    #cdot.touching{ background:rgba(0,255,136,0.9);  border-color:#00ff88; width:34px; height:34px; }
+
+    /* Flash click */
+    #click-flash {
+      position:absolute; inset:0; background:rgba(0,255,136,0.15);
+      pointer-events:none; z-index:7; opacity:0; transition:opacity 0.08s;
+    }
+    #click-flash.show { opacity:1; }
   </style>
 </head>
 <body>
@@ -125,18 +143,22 @@
   <button class="btn btn-start"   id="btn-start">📷 Avvia Camera</button>
   <button class="btn btn-recalib" id="btn-recalib">🔄 Ricalibra</button>
 </div>
-
-<!-- Slider zoom -->
 <div id="zoom-row">
   <label>🔍 Zoom:</label>
   <input type="range" id="zoom-slider" min="1" max="5" step="0.1" value="1">
   <span id="zoom-val">1.0×</span>
+</div>
+<div id="sens-row">
+  <label>👆 Sensibilità:</label>
+  <input type="range" id="sens-slider" min="1" max="10" step="1" value="5">
+  <span id="sens-val">Media</span>
 </div>
 
 <div id="cam-wrap">
   <video id="video" playsinline autoplay muted></video>
   <canvas id="overlay-canvas"></canvas>
   <div id="screen-guide"></div>
+  <div id="click-flash"></div>
 
   <div class="corner-marker cm-waiting" id="cm-0" style="top:8px;left:8px">TL</div>
   <div class="corner-marker cm-waiting" id="cm-1" style="top:8px;right:8px">TR</div>
@@ -150,9 +172,9 @@
   <div id="instr" style="display:none"></div>
   <div id="hold-wrap" style="display:none"><div id="hold-fill"></div></div>
   <div id="active-hud" style="display:none">
-    <div class="hbox">X:<b id="hx">—</b></div>
-    <div class="hbox">Y:<b id="hy">—</b></div>
     <div class="hbox" id="hg">🖐 hover</div>
+    <div class="hbox">vel: <b id="hv">0.000</b></div>
+    <div class="hbox">X:<b id="hx">—</b> Y:<b id="hy">—</b></div>
   </div>
   <div id="cdot" style="display:none"></div>
 </div>
@@ -200,32 +222,84 @@ const CORNERS=['Top-Left ↖','Top-Right ↗','Bottom-Right ↘','Bottom-Left �
 const CEMO=['↖','↗','↘','↙'];
 let calibPts=[],H=null,state='start';
 let holdStart=null; const HOLD_MS=1500;
-let touchActive=false,touchCool=false; const COOL_MS=450;
-let sx=0.5,sy=0.5; const ALPHA=0.35;
-let videoTrack=null;
+let touchCool=false; const COOL_MS=600;
 
-// ── ZOOM ──────────────────────────────────────────────────
-const zoomSlider=document.getElementById('zoom-slider');
-const zoomVal=document.getElementById('zoom-val');
+// Smoothing posizione (media mobile su N frame)
+const POS_BUF=6;
+let posHistory=[];
+function smoothPos(x,y){
+  posHistory.push([x,y]);
+  if(posHistory.length>POS_BUF) posHistory.shift();
+  const sx=posHistory.reduce((s,p)=>s+p[0],0)/posHistory.length;
+  const sy=posHistory.reduce((s,p)=>s+p[1],0)/posHistory.length;
+  return [sx,sy];
+}
 
-zoomSlider.addEventListener('input', async ()=>{
-  const z=parseFloat(zoomSlider.value);
-  zoomVal.textContent=z.toFixed(1)+'×';
-  if(videoTrack){
-    const caps=videoTrack.getCapabilities();
-    if(caps.zoom){
-      const minZ=caps.zoom.min||1;
-      const maxZ=caps.zoom.max||5;
-      const clampedZ=Math.max(minZ,Math.min(maxZ,z));
-      try{ await videoTrack.applyConstraints({advanced:[{zoom:clampedZ}]}); }
-      catch(e){ console.warn('Zoom non supportato:',e); }
+// ── RILEVAMENTO TAP BASATO SU VELOCITÀ ─────────────────────
+// Teniamo uno storico della posizione Y del dito negli ultimi N frame
+// Quando il dito scende veloce (velocità Y positiva alta) → tap DOWN
+// Quando torna su (velocità Y negativa) → tap UP → questo è il click
+const VEL_BUF = 8;
+let yHistory = [];   // ultimi N valori Y del fingertip
+let tapState = 'idle'; // 'idle' | 'down'
+let tapPeakY = 0;
+
+// Soglia velocità: regolabile con slider (0.004 = bassa, 0.012 = alta)
+let TAP_DOWN_THRESH  = 0.006;
+let TAP_UP_THRESH    = -0.003;
+let TAP_MIN_EXCURSION = 0.015; // minima escursione verticale del tap
+
+const sensSlider = document.getElementById('sens-slider');
+const sensLabels = ['','Molto alta','Alta','Alta','Media','Media','Bassa','Bassa','Molto bassa','Minima','Minima'];
+sensSlider.addEventListener('input', ()=>{
+  const v = parseInt(sensSlider.value);
+  document.getElementById('sens-val').textContent = sensLabels[v];
+  // v=1 massima sens (soglie basse), v=10 minima sens (soglie alte)
+  TAP_DOWN_THRESH   = 0.002 + (v-1) * 0.0015;
+  TAP_UP_THRESH     = -(0.001 + (v-1) * 0.0008);
+  TAP_MIN_EXCURSION = 0.008 + (v-1) * 0.003;
+});
+sensSlider.dispatchEvent(new Event('input')); // init
+
+function updateVelocity(y){
+  yHistory.push(y);
+  if(yHistory.length > VEL_BUF) yHistory.shift();
+  if(yHistory.length < 3) return 0;
+  // Velocità = media delle differenze recenti
+  let vel=0;
+  for(let i=1;i<yHistory.length;i++) vel+=yHistory[i]-yHistory[i-1];
+  return vel/(yHistory.length-1);
+}
+
+function checkTap(rawY, onTap){
+  const vel = updateVelocity(rawY);
+  document.getElementById('hv').textContent = vel.toFixed(4);
+
+  if(tapState==='idle'){
+    if(vel > TAP_DOWN_THRESH){
+      tapState='down';
+      tapPeakY=rawY;
+    }
+  } else if(tapState==='down'){
+    tapPeakY=Math.max(tapPeakY, rawY);
+    if(vel < TAP_UP_THRESH){
+      const excursion = tapPeakY - yHistory[0];
+      if(excursion > TAP_MIN_EXCURSION && !touchCool){
+        onTap();
+        touchCool=true;
+        setTimeout(()=>{ touchCool=false; }, COOL_MS);
+      }
+      tapState='idle';
+      yHistory=[];
     }
   }
-});
+  return vel;
+}
 
 // ── CALIBRAZIONE ──────────────────────────────────────────
 function startCalib(){
   calibPts=[]; H=null; state='calibrating';
+  posHistory=[]; yHistory=[]; tapState='idle';
   for(let i=0;i<4;i++){
     document.getElementById('cm-'+i).style.display='flex';
     document.getElementById('cm-'+i).className='corner-marker cm-waiting';
@@ -258,6 +332,7 @@ function updateCalibUI(){
 function finishCalib(){
   H=computeH(calibPts,[[0,0],[1,0],[1,1],[0,1]]);
   state='active';
+  posHistory=[]; yHistory=[]; tapState='idle';
   document.getElementById('step-dots').style.display='none';
   document.getElementById('instr').style.display='none';
   document.getElementById('hold-wrap').style.display='none';
@@ -265,6 +340,7 @@ function finishCalib(){
   document.getElementById('active-hud').style.display='flex';
   document.getElementById('cdot').style.display='block';
   document.getElementById('btn-recalib').style.display='flex';
+  document.getElementById('sens-row').style.display='flex';
   for(let i=0;i<4;i++) document.getElementById('cm-'+i).className='corner-marker cm-done';
   pill('state','green','⬤ Attivo 👆');
   setTimeout(()=>{ for(let i=0;i<4;i++) document.getElementById('cm-'+i).style.display='none'; },2500);
@@ -275,9 +351,16 @@ const video=document.getElementById('video');
 const canvas=document.getElementById('overlay-canvas');
 const ctx=canvas.getContext('2d');
 const cdot=document.getElementById('cdot');
+const flash=document.getElementById('click-flash');
 
+// Modello 1 = più preciso
 const hands=new Hands({ locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
-hands.setOptions({ maxNumHands:1, modelComplexity:0, minDetectionConfidence:0.72, minTrackingConfidence:0.65 });
+hands.setOptions({
+  maxNumHands:1,
+  modelComplexity:1,           // ← più preciso
+  minDetectionConfidence:0.8,
+  minTrackingConfidence:0.75
+});
 hands.onResults(onResults);
 
 let processing=false;
@@ -288,6 +371,18 @@ function frameLoop(){
   hands.send({image:video}).then(()=>{ processing=false; }).catch(()=>{ processing=false; });
 }
 
+function triggerClick(mx,my){
+  const cx=Math.max(0,Math.min(1,mx));
+  const cy=Math.max(0,Math.min(1,my));
+  socket.emit('move',{x:cx,y:cy});
+  socket.emit('click',{button:'left',x:cx,y:cy});
+  // Feedback visivo
+  cdot.classList.add('touching');
+  flash.classList.add('show');
+  document.getElementById('hg').textContent='👆 CLICK!';
+  setTimeout(()=>{ cdot.classList.remove('touching'); flash.classList.remove('show'); },200);
+}
+
 function onResults(results){
   canvas.width=video.videoWidth||canvas.offsetWidth;
   canvas.height=video.videoHeight||canvas.offsetHeight;
@@ -295,18 +390,29 @@ function onResults(results){
 
   if(!results.multiHandLandmarks?.length){
     holdStart=null;
+    yHistory=[]; tapState='idle';
     document.getElementById('hold-fill').style.width='0%';
-    if(state==='active') document.getElementById('hg').textContent='👋 mano non vista';
+    if(state==='active'){
+      document.getElementById('hg').textContent='👋 mano non vista';
+      cdot.classList.remove('ready','touching');
+    }
     return;
   }
 
   const lm=results.multiHandLandmarks[0];
-  drawConnectors(ctx,lm,HAND_CONNECTIONS,{color:'rgba(0,212,255,0.5)',lineWidth:2});
-  drawLandmarks(ctx,lm,{color:'#6c63ff',lineWidth:1,radius:3});
+
+  // Disegna con colori migliori
+  drawConnectors(ctx,lm,HAND_CONNECTIONS,{color:'rgba(0,212,255,0.6)',lineWidth:3});
+  drawLandmarks(ctx,lm,{color:'#ffffff',lineWidth:1,radius:4});
+  // Evidenzia punta indice
+  ctx.beginPath();
+  ctx.arc(lm[8].x*canvas.width,lm[8].y*canvas.height,8,0,Math.PI*2);
+  ctx.fillStyle='rgba(255,200,0,0.9)'; ctx.fill();
 
   const tip=lm[8];
   const rawX=tip.x, rawY=tip.y;
 
+  // ── CALIBRAZIONE ──
   if(state==='calibrating'){
     ctx.beginPath();
     ctx.arc(rawX*canvas.width,rawY*canvas.height,14,0,Math.PI*2);
@@ -315,7 +421,7 @@ function onResults(results){
       holdStart={t:Date.now(),x:rawX,y:rawY};
     } else {
       const moved=Math.hypot(rawX-holdStart.x,rawY-holdStart.y);
-      if(moved>0.035){
+      if(moved>0.03){
         holdStart={t:Date.now(),x:rawX,y:rawY};
         document.getElementById('hold-fill').style.width='0%';
       } else {
@@ -328,56 +434,78 @@ function onResults(results){
   }
 
   if(state!=='active'||!H) return;
-  sx=sx+ALPHA*(rawX-sx); sy=sy+ALPHA*(rawY-sy);
+
+  // Posizione smoothed
+  const [sx,sy]=smoothPos(rawX,rawY);
   const [mx,my]=applyH(H,sx,sy);
   const inScreen=mx>=-0.05&&mx<=1.05&&my>=-0.05&&my<=1.05;
-  document.getElementById('hx').textContent=mx.toFixed(3);
-  document.getElementById('hy').textContent=my.toFixed(3);
-  cdot.style.left=(rawX*100)+'%'; cdot.style.top=(rawY*100)+'%';
 
-  const relZ=tip.z-lm[0].z;
-  const pinch=Math.hypot(tip.x-lm[4].x,tip.y-lm[4].y)<0.065;
-  const isTouching=(relZ>0.07&&inScreen)||pinch;
+  document.getElementById('hx').textContent=mx.toFixed(2);
+  document.getElementById('hy').textContent=my.toFixed(2);
 
-  if(isTouching){
-    cdot.classList.add('touching');
-    document.getElementById('hg').textContent='👆 TOCCO!';
-    if(!touchActive&&!touchCool&&inScreen){
-      touchActive=true; touchCool=true;
-      const cx=Math.max(0,Math.min(1,mx)), cy=Math.max(0,Math.min(1,my));
-      socket.emit('move',{x:cx,y:cy});
-      socket.emit('click',{button:'left',x:cx,y:cy});
-      setTimeout(()=>{ touchCool=false; },COOL_MS);
-    }
-  } else {
-    cdot.classList.remove('touching'); touchActive=false;
+  // Cursore visivo
+  cdot.style.left=(rawX*100)+'%';
+  cdot.style.top=(rawY*100)+'%';
+
+  // Stato cursore
+  if(!cdot.classList.contains('touching')){
     if(inScreen){
-      document.getElementById('hg').textContent='☝️ hover';
-      socket.emit('move',{x:Math.max(0,Math.min(1,mx)),y:Math.max(0,Math.min(1,my))});
+      cdot.classList.add('ready');
+      document.getElementById('hg').textContent='☝️ pronto';
     } else {
+      cdot.classList.remove('ready');
       document.getElementById('hg').textContent='↗ fuori area';
     }
   }
+
+  // Invia movimento continuo
+  if(inScreen){
+    socket.emit('move',{x:Math.max(0,Math.min(1,mx)),y:Math.max(0,Math.min(1,my))});
+  }
+
+  // Rilevamento tap basato su velocità
+  checkTap(rawY, ()=>{
+    if(inScreen) triggerClick(mx,my);
+  });
 }
+
+// ── ZOOM ──────────────────────────────────────────────────
+let videoTrack=null;
+const zoomSlider=document.getElementById('zoom-slider');
+const zoomValEl=document.getElementById('zoom-val');
+let zoomCssMode=false;
+
+zoomSlider.addEventListener('input', async()=>{
+  const z=parseFloat(zoomSlider.value);
+  zoomValEl.textContent=z.toFixed(1)+'×';
+  if(zoomCssMode){
+    const scale=1/z;
+    video.style.transform=`scale(${scale})`;
+    video.style.transformOrigin='center center';
+  } else if(videoTrack){
+    const caps=videoTrack.getCapabilities();
+    if(caps.zoom){
+      try{ await videoTrack.applyConstraints({advanced:[{zoom:z}]}); } catch(e){}
+    }
+  }
+});
 
 // ── AVVIO CAMERA ──────────────────────────────────────────
 async function startCamera(){
   const btn=document.getElementById('btn-start');
   btn.disabled=true; btn.textContent='⏳ Avvio...';
 
-  // Prova a prendere la camera con zoom minimo (grandangolo)
   const configs=[
-    { video:{ facingMode:{exact:'environment'}, zoom:1 } },
-    { video:{ facingMode:{exact:'environment'} } },
-    { video:{ facingMode:'environment' } },
-    { video:{ facingMode:'user' } },
-    { video: true }
+    {video:{facingMode:{exact:'environment'}}},
+    {video:{facingMode:'environment'}},
+    {video:{facingMode:'user'}},
+    {video:true}
   ];
 
   let stream=null;
   for(const cfg of configs){
     try{ stream=await navigator.mediaDevices.getUserMedia(cfg); break; }
-    catch(e){ console.warn('Tentativo fallito:',e.message); }
+    catch(e){ console.warn('Fallito:',e.message); }
   }
 
   if(!stream){
@@ -386,41 +514,25 @@ async function startCamera(){
     return;
   }
 
-  // Salva il track e imposta zoom al minimo
   videoTrack=stream.getVideoTracks()[0];
   const caps=videoTrack.getCapabilities();
-  console.log('Camera caps:', JSON.stringify(caps));
 
   if(caps.zoom){
-    const minZoom=caps.zoom.min||1;
-    const maxZoom=caps.zoom.max||5;
-    // Imposta zoom al minimo per vedere più schermo
-    try{
-      await videoTrack.applyConstraints({advanced:[{zoom:minZoom}]});
-      zoomSlider.min=minZoom;
-      zoomSlider.max=maxZoom;
-      zoomSlider.value=minZoom;
-      zoomSlider.step=(maxZoom-minZoom)/50;
-      zoomVal.textContent=minZoom.toFixed(1)+'×';
-    } catch(e){ console.warn('Zoom applyConstraints fallito:',e); }
-    document.getElementById('zoom-row').style.display='flex';
+    const minZ=caps.zoom.min||1, maxZ=caps.zoom.max||5;
+    try{ await videoTrack.applyConstraints({advanced:[{zoom:minZ}]}); } catch(e){}
+    zoomSlider.min=minZ; zoomSlider.max=maxZ;
+    zoomSlider.value=minZ; zoomSlider.step=(maxZ-minZ)/50;
+    zoomValEl.textContent=minZ.toFixed(1)+'×';
   } else {
-    // Zoom API non supportata — mostra slider CSS (zoom visivo non ottico)
-    document.getElementById('zoom-row').style.display='flex';
-    zoomSlider.addEventListener('input', ()=>{
-      const z=parseFloat(zoomSlider.value);
-      zoomVal.textContent=z.toFixed(1)+'×';
-      // Zoom CSS inverso: riduco il video per vedere di più
-      const scale=1/z;
-      video.style.transform=`scale(${scale})`;
-      video.style.transformOrigin='center center';
-    });
+    zoomCssMode=true;
+    zoomSlider.min=1; zoomSlider.max=3; zoomSlider.step=0.05; zoomSlider.value=1;
+    zoomValEl.textContent='1.0×';
   }
+  document.getElementById('zoom-row').style.display='flex';
 
   video.srcObject=stream;
   await new Promise(res=>{ video.onloadedmetadata=res; });
   await video.play();
-
   btn.textContent='✅ Camera attiva';
   frameLoop();
   startCalib();
