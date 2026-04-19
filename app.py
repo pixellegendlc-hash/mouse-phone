@@ -9,21 +9,17 @@ socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
 pc_clients = set()
 phone_clients = set()
 
-
 @app.route('/')
 def index():
     return send_from_directory('static', 'index.html')
 
-
 @app.route('/health')
 def health():
-    return {'status': 'ok', 'pc_clients': len(pc_clients), 'phone_clients': len(phone_clients)}
-
+    return {'status': 'ok', 'pc': len(pc_clients), 'phone': len(phone_clients)}
 
 @socketio.on('connect')
 def on_connect():
     print(f'[CONNECT] {request.sid}')
-
 
 @socketio.on('disconnect')
 def on_disconnect():
@@ -31,39 +27,34 @@ def on_disconnect():
     phone_clients.discard(request.sid)
     print(f'[DISCONNECT] {request.sid}')
 
-
 @socketio.on('register')
 def on_register(data):
     role = data.get('role')
     if role == 'pc':
         pc_clients.add(request.sid)
-        print(f'[PC REGISTRATO] {request.sid}')
-        emit('registered', {'role': 'pc', 'message': 'PC connesso al server!'})
+        emit('registered', {'role': 'pc', 'message': 'PC connesso!'})
     elif role == 'phone':
         phone_clients.add(request.sid)
-        print(f'[TELEFONO REGISTRATO] {request.sid}')
         emit('registered', {'role': 'phone', 'message': 'Telefono connesso!'})
-        for pc_sid in pc_clients:
-            emit('phone_connected', {}, to=pc_sid)
+        for s in pc_clients: emit('phone_connected', {}, to=s)
 
+def relay(event, data):
+    for s in list(pc_clients): emit(event, data, to=s)
 
-@socketio.on('move')
-def on_move(data):
-    for pc_sid in list(pc_clients):
-        emit('move', data, to=pc_sid)
-
-
-@socketio.on('click')
-def on_click(data):
-    for pc_sid in list(pc_clients):
-        emit('click', data, to=pc_sid)
-
-
-@socketio.on('scroll')
-def on_scroll(data):
-    for pc_sid in list(pc_clients):
-        emit('scroll', data, to=pc_sid)
-
+@socketio.on('move')         
+def on_move(d):        relay('move', d)
+@socketio.on('click')        
+def on_click(d):       relay('click', d)
+@socketio.on('double_click') 
+def on_dbl(d):         relay('double_click', d)
+@socketio.on('drag_start')   
+def on_ds(d):          relay('drag_start', d)
+@socketio.on('move_drag')    
+def on_md(d):          relay('move_drag', d)
+@socketio.on('drag_end')     
+def on_de(d):          relay('drag_end', d)
+@socketio.on('scroll')       
+def on_scroll(d):      relay('scroll', d)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
