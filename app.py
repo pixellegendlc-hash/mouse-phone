@@ -1,12 +1,10 @@
-from gevent import monkey; monkey.patch_all()
-
 from flask import Flask, send_from_directory, request
 from flask_socketio import SocketIO, emit
 import os
 
 app = Flask(__name__, static_folder='static')
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'mouse-phone-secret')
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode='gevent')
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
 
 pc_clients = set()
 phone_clients = set()
@@ -69,4 +67,4 @@ def on_scroll(data):
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    socketio.run(app, host='0.0.0.0', port=port, debug=False)
+    socketio.run(app, host='0.0.0.0', port=port, debug=False, allow_unsafe_werkzeug=True)
