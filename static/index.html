@@ -13,8 +13,8 @@
     }
     #top-bar {
       padding:7px 12px; background:#12121f;
-      display:flex; justify-content:space-between; align-items:center;
-      border-bottom:1px solid #1e1e30; flex-shrink:0; gap:6px;
+      display:flex; gap:6px; align-items:center;
+      border-bottom:1px solid #1e1e30; flex-shrink:0;
     }
     .pill {
       padding:4px 9px; border-radius:20px;
@@ -23,19 +23,17 @@
     .pill.green  { background:#003820; color:#00ff88; }
     .pill.red    { background:#380008; color:#ff4466; }
     .pill.yellow { background:#382800; color:#ffcc00; }
-
     #btn-row {
       padding:7px 12px; background:#12121f;
       display:flex; gap:7px; flex-shrink:0; border-bottom:1px solid #1e1e30;
     }
     .btn {
       flex:1; padding:10px; border:none; border-radius:9px;
-      font-size:12px; font-weight:700; cursor:pointer; transition:opacity .15s;
+      font-size:12px; font-weight:700; cursor:pointer;
     }
-    .btn:active { opacity:.8; }
-    .btn-start   { background:linear-gradient(135deg,#6c63ff,#00d4ff); color:#fff; }
+    .btn-start { background:linear-gradient(135deg,#6c63ff,#00d4ff); color:#fff; }
     .btn-start:disabled { background:#2a2a40; color:#555; }
-    .btn-sec     { background:#1e1e30; color:#aaa; display:none; }
+    .btn-sec   { background:#1e1e30; color:#aaa; display:none; }
 
     /* Controls */
     #ctrl-row {
@@ -44,42 +42,45 @@
     }
     .cl {
       display:flex; align-items:center; gap:10px;
-      padding:4px 12px; border-bottom:1px solid #0f0f18;
+      padding:5px 12px; border-bottom:1px solid #0f0f18;
     }
     .cl:last-child { border-bottom:none; }
-    .cl label { font-size:11px; color:#555; width:78px; flex-shrink:0; }
-    .cl input[type=range] { flex:1; accent-color:#6c63ff; }
-    .cl span { font-size:11px; color:#00d4ff; width:44px; text-align:right; }
+    .cl label { font-size:11px; color:#555; width:90px; flex-shrink:0; }
+    .cl input  { flex:1; accent-color:#6c63ff; }
+    .cl span   { font-size:11px; color:#00d4ff; width:44px; text-align:right; }
 
-    /* Mode row */
+    /* Mode */
     #mode-row {
-      display:none; flex-shrink:0;
-      background:#0d0d1a; border-bottom:1px solid #1a1a2e;
-      padding:5px 12px; gap:6px; align-items:center;
+      display:none; flex-shrink:0; background:#0d0d1a;
+      border-bottom:1px solid #1a1a2e; padding:5px 12px; gap:6px;
     }
     .mb {
       flex:1; padding:7px 4px; border:1.5px solid #2a2a3a; border-radius:8px;
       background:transparent; color:#555; font-size:11px; font-weight:700; cursor:pointer;
     }
-    .mb.on { border-color:#6c63ff; color:#fff; background:rgba(108,99,255,0.18); }
+    .mb.on { border-color:#6c63ff; color:#fff; background:rgba(108,99,255,.18); }
+
+    /* Legend */
+    #legend {
+      display:none; flex-shrink:0; background:#08080f;
+      border-bottom:1px solid #1a1a2e; padding:5px 12px;
+      font-size:10px; color:#555; line-height:1.8; text-align:center;
+    }
+    #legend b { color:#aaa; }
 
     /* Camera */
-    #cam-wrap {
-      position:relative; flex:1; overflow:hidden; background:#000; min-height:0;
-    }
+    #cam-wrap { position:relative; flex:1; overflow:hidden; background:#000; min-height:0; }
     #video { width:100%; height:100%; object-fit:cover; display:block; transform-origin:center; }
     #overlay-canvas { position:absolute; inset:0; width:100%; height:100%; }
 
-    /* Screen guide */
     #sg {
-      position:absolute; inset:8%; border:2px dashed rgba(255,255,255,0.2);
+      position:absolute; inset:8%; border:2px dashed rgba(255,255,255,.2);
       border-radius:8px; pointer-events:none; z-index:2; display:none;
     }
     #sg::after { content:'inquadra tutto lo schermo PC';
       position:absolute; bottom:-20px; left:0; right:0;
-      text-align:center; font-size:10px; color:rgba(255,255,255,0.3); }
+      text-align:center; font-size:10px; color:rgba(255,255,255,.3); }
 
-    /* Corner markers */
     .cm {
       position:absolute; width:50px; height:50px; border-radius:50%;
       display:flex; align-items:center; justify-content:center;
@@ -101,66 +102,57 @@
     #instr {
       position:absolute; bottom:19%; left:6%; right:6%;
       background:rgba(0,0,0,.92); border-radius:14px;
-      padding:13px 16px; text-align:center;
-      font-size:14px; line-height:1.7; z-index:10;
+      padding:13px 16px; text-align:center; font-size:14px; line-height:1.7; z-index:10;
     }
     #hold-wrap {
       position:absolute; bottom:12%; left:10%; right:10%;
       height:7px; background:#1a1a1a; border-radius:4px; overflow:hidden; z-index:10;
     }
-    #hold-fill {
-      height:100%; width:0%; background:linear-gradient(90deg,#6c63ff,#00d4ff);
-      border-radius:4px; transition:width .04s linear;
-    }
+    #hold-fill { height:100%; width:0%; background:linear-gradient(90deg,#6c63ff,#00d4ff); border-radius:4px; }
 
-    /* HUD bottom */
+    /* HUD */
     #hud {
-      position:absolute; bottom:6px; left:6px; right:6px;
+      position:absolute; bottom:5px; left:5px; right:5px;
       display:flex; gap:4px; z-index:5; flex-wrap:wrap; justify-content:center;
     }
-    .hb {
-      background:rgba(0,0,0,.82); border-radius:7px;
-      padding:3px 8px; font-size:10px; border:1px solid #1e1e30;
-    }
+    .hb { background:rgba(0,0,0,.85); border-radius:7px; padding:3px 8px; font-size:10px; border:1px solid #1e1e30; }
     .hb b { color:#00d4ff; }
-    .hb.r { border-color:#ff4466; }
-    .hb.g { border-color:#00ff88; }
-    .hb.y { border-color:#ffcc00; }
+    .hb.act { border-color:#00ff88; color:#00ff88; font-weight:700; }
+    .hb.warn { border-color:#ffcc00; color:#ffcc00; }
+    .hb.drag { border-color:#ff9900; color:#ff9900; font-weight:700; }
+    .hb.dbl  { border-color:#00aaff; color:#00aaff; font-weight:700; }
 
-    /* Cursori per ogni mano */
-    .hand-cursor {
-      position:absolute; width:18px; height:18px; border-radius:50%;
-      border:2px solid rgba(255,255,255,.7);
+    /* Hand cursors */
+    .hcursor {
+      position:absolute; border-radius:50%; border:2.5px solid rgba(255,255,255,.8);
       transform:translate(-50%,-50%); pointer-events:none; z-index:6;
-      transition:background .08s;
+      transition:background .07s, width .07s, height .07s;
+      width:20px; height:20px;
     }
-    .hand-cursor.h0        { background:rgba(108,99,255,.82); }
-    .hand-cursor.h1        { background:rgba(255,100,100,.82); }
-    .hand-cursor.ready     { box-shadow:0 0 10px currentColor; }
-    .hand-cursor.dipping   { background:rgba(255,200,0,.9) !important; }
-    .hand-cursor.clicked   { background:rgba(0,255,136,.95) !important; transform:translate(-50%,-50%) scale(1.9); }
-    .hand-cursor.dragging  { background:rgba(255,165,0,.9) !important; width:24px; height:24px; }
+    .hcursor.h0 { background:rgba(108,99,255,.85); }
+    .hcursor.h1 { background:rgba(255,80,80,.85); }
+    .hcursor.curled  { background:rgba(255,200,0,.95) !important; width:28px !important; height:28px !important; box-shadow:0 0 12px rgba(255,200,0,.6); }
+    .hcursor.clicked { background:rgba(0,255,136,.95) !important; width:34px !important; height:34px !important; }
+    .hcursor.dragging { background:rgba(255,153,0,.95) !important; width:26px !important; height:26px !important; }
 
     /* Dwell ring */
     .dring {
-      position:absolute; pointer-events:none; z-index:8;
-      width:48px; height:48px; transform:translate(-50%,-50%); display:none;
+      position:absolute; pointer-events:none; z-index:7;
+      width:52px; height:52px; transform:translate(-50%,-50%); display:none;
     }
+
+    /* Curl meter bar per mano */
+    .cmeter {
+      position:absolute; left:4px; right:4px; height:3px; z-index:8;
+      border-radius:2px; overflow:hidden; background:rgba(255,255,255,.08);
+    }
+    .cmeter-fill { height:100%; width:0%; border-radius:2px; transition:width .04s; }
 
     /* Flash */
-    #flash {
-      position:absolute; inset:0; background:rgba(0,255,136,.1);
-      pointer-events:none; z-index:7; opacity:0; transition:opacity .06s;
-    }
-    #flash.show { opacity:1; }
-    #flash.dbl  { background:rgba(0,200,255,.18); }
-
-    /* Drag trail */
-    #drag-flash {
-      position:absolute; inset:0; background:rgba(255,165,0,.07);
-      pointer-events:none; z-index:7; opacity:0; transition:opacity .1s;
-    }
-    #drag-flash.show { opacity:1; }
+    #flash { position:absolute; inset:0; pointer-events:none; z-index:9; opacity:0; transition:opacity .06s; }
+    #flash.click { opacity:1; background:rgba(0,255,136,.12); }
+    #flash.dbl   { opacity:1; background:rgba(0,170,255,.16); }
+    #flash.drag  { opacity:1; background:rgba(255,153,0,.10); }
   </style>
 </head>
 <body>
@@ -180,14 +172,17 @@
     <span id="zv">1.0×</span>
   </div>
   <div class="cl">
-    <label>👆 Sensibilità</label>
+    <label>👆 Sensibilità piega</label>
     <input type="range" id="ssl" min="1" max="9" step="1" value="5">
-    <span id="sv">Media</span>
+    <span id="sv">—</span>
   </div>
 </div>
 <div id="mode-row">
-  <button class="mb on"  id="m-tap"   onclick="setMode('tap')">👆 Tap</button>
-  <button class="mb"     id="m-dwell" onclick="setMode('dwell')">⏱ Dwell</button>
+  <button class="mb on"  id="m-curl"  onclick="setMode('curl')">🤙 Piega dito</button>
+  <button class="mb"     id="m-dwell" onclick="setMode('dwell')">⏱ Dwell 1s</button>
+</div>
+<div id="legend">
+  <b>Piega dito:</b> dito dritto = cursore · piega indice = click · piega 500ms+muovi = drag · doppia piega rapida = doppio click
 </div>
 
 <div id="cam-wrap">
@@ -208,16 +203,13 @@
   <div id="hold-wrap" style="display:none"><div id="hold-fill"></div></div>
 
   <div id="hud" style="display:none">
-    <div class="hb" id="hg0">🤚 —</div>
-    <div class="hb" id="hg1" style="display:none">🤚 —</div>
+    <div class="hb" id="hg0">🤚—</div>
+    <div class="hb" id="hg1">🤚—</div>
+    <div class="hb" id="hact">—</div>
     <div class="hb">X:<b id="hx">—</b> Y:<b id="hy">—</b></div>
-    <div class="hb y" id="hact">idle</div>
   </div>
 
-  <!-- Cursori mani (creati via JS) -->
-  <!-- Dwell rings (creati via JS) -->
   <div id="flash"></div>
-  <div id="drag-flash"></div>
 </div>
 
 <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
@@ -230,7 +222,7 @@
 //  SOCKET
 // ══════════════════════════════════════════════════════
 const socket = io({ transports:['websocket'] });
-socket.on('connect', ()=>{ pill('server','green','⬤ Server OK'); socket.emit('register',{role:'phone'}); });
+socket.on('connect',    ()=>{ pill('server','green','⬤ Server OK'); socket.emit('register',{role:'phone'}); });
 socket.on('disconnect', ()=>pill('server','red','⬤ Disconnesso'));
 function pill(id,cls,txt){ const e=document.getElementById('pill-'+id); e.className='pill '+cls; e.textContent=txt; }
 
@@ -263,263 +255,296 @@ function applyH(H,x,y){
   const w=H[2][0]*x+H[2][1]*y+H[2][2];
   return [(H[0][0]*x+H[0][1]*y+H[0][2])/w,(H[1][0]*x+H[1][1]*y+H[1][2])/w];
 }
-function clamp(v){ return Math.max(0,Math.min(1,v)); }
+function clamp01(v){ return Math.max(0,Math.min(1,v)); }
 
 // ══════════════════════════════════════════════════════
-//  SMOOTHING — media mobile ponderata per mano
+//  SMOOTHING
 // ══════════════════════════════════════════════════════
-const SMOOTH_N = 5;
-function makeSmoother(){
-  let hist=[];
-  return function(x,y){
-    hist.push([x,y]);
-    if(hist.length>SMOOTH_N) hist.shift();
+function makeSmoother(n){
+  let h=[];
+  return (x,y)=>{
+    h.push([x,y]); if(h.length>n) h.shift();
     let wx=0,wy=0,wt=0;
-    for(let i=0;i<hist.length;i++){ const w=i+1; wx+=hist[i][0]*w; wy+=hist[i][1]*w; wt+=w; }
-    return [wx/wt,wy/wt];
+    for(let i=0;i<h.length;i++){ const w=i+1; wx+=h[i][0]*w; wy+=h[i][1]*w; wt+=w; }
+    return [wx/wt, wy/wt];
   };
 }
 
 // ══════════════════════════════════════════════════════
-//  HELPER — dito indice esteso?
+//  CURL DETECTION
+//
+//  Il gesto è: piega l'indice (come per grattare)
+//  MediaPipe landmarks indice: MCP=5, PIP=6, DIP=7, TIP=8
+//
+//  Metrica: distanza TIP→MCP normalizzata per lunghezza dito
+//  - Dito dritto:  dist(TIP,MCP) ≈ 0.35+ (grande)
+//  - Dito piegato: dist(TIP,MCP) ≈ 0.10-0.20 (piccola)
+//
+//  Vantaggio: funziona a qualsiasi angolazione del telefono,
+//  non dipende da movimenti temporali, rilevamento per frame.
 // ══════════════════════════════════════════════════════
-function isPointing(lm){
-  return lm[8].y < lm[6].y - 0.02;
+function dist(a,b){ return Math.hypot(a.x-b.x, a.y-b.y); }
+function dist3(a,b){ return Math.hypot(a.x-b.x, a.y-b.y, (a.z||0)-(b.z||0)); }
+
+// Calcola "curl score" 0 (dritto) → 1 (piegato completamente)
+function getCurlScore(lm){
+  // Lunghezza del dito (MCP→TIP lungo l'osso, invariante all'angolazione)
+  const fingerLen = dist3(lm[5],lm[6]) + dist3(lm[6],lm[7]) + dist3(lm[7],lm[8]);
+  // Distanza diretta TIP→MCP
+  const tipToMcp = dist3(lm[8], lm[5]);
+  // Curl = 1 - (tipToMcp / fingerLen): 0=dritto, ~0.5-0.7=piegato
+  const raw = 1 - (tipToMcp / (fingerLen + 0.001));
+  return Math.max(0, Math.min(1, raw));
 }
 
-// ══════════════════════════════════════════════════════
-//  PER-HAND STATE
-//  Ogni mano ha il suo stato tap/drag/dwell indipendente
-// ══════════════════════════════════════════════════════
-function makeHandState(idx){
-  const cursor = document.createElement('div');
-  cursor.className = 'hand-cursor h'+idx;
-  cursor.style.display = 'none';
-  document.getElementById('cam-wrap').appendChild(cursor);
-
-  // Dwell ring SVG
-  const ring = document.createElementNS('http://www.w3.org/2000/svg','svg');
-  ring.setAttribute('viewBox','0 0 50 50');
-  ring.classList.add('dring');
-  ring.innerHTML=`<circle cx="25" cy="25" r="20" fill="none" stroke="rgba(255,200,0,.25)" stroke-width="4"/>
-    <circle class="darc" cx="25" cy="25" r="20" fill="none" stroke="#ffcc00" stroke-width="4"
-      stroke-linecap="round" stroke-dasharray="125.6" stroke-dashoffset="125.6"
-      transform="rotate(-90 25 25)"/>`;
-  document.getElementById('cam-wrap').appendChild(ring);
-
-  return {
-    idx,
-    cursor,
-    ring,
-    smooth: makeSmoother(),
-    // tap
-    baseline: null,
-    tapPhase: 'idle',    // 'idle'|'dipping'|'cooldown'
-    dipPeakY: 0,
-    dipTimer: null,
-    tapCool: false,
-    lastTapTime: 0,
-    // dwell
-    dwellStart: null,
-    dwellLX: 0, dwellLY: 0,
-    dwellCool: false,
-    // drag
-    dragging: false,
-    dragCool: false,
-  };
-}
-
-// ══════════════════════════════════════════════════════
-//  SENSIBILITÀ — soglie tap
-// ══════════════════════════════════════════════════════
-let DIP_ENTER = 0.030, DIP_RETURN = 0.018, DIP_MIN = 0.022;
+// Soglia piega: regolabile da slider
+// CURL_THRESH: score sopra il quale si considera "piegato"
+let CURL_THRESH = 0.38;
 const SL=['','Massima','Alta+','Alta','Media+','Media','Bassa+','Bassa','Minima+','Minima'];
 document.getElementById('ssl').addEventListener('input', function(){
   const v=parseInt(this.value);
   document.getElementById('sv').textContent=SL[v]||v;
-  DIP_ENTER  = 0.013 + (v-1)*0.0045;
-  DIP_RETURN = 0.009 + (v-1)*0.0025;
-  DIP_MIN    = 0.011 + (v-1)*0.0030;
+  // v=1 (max sensibilità): thresh bassa → basta poco per click
+  // v=9 (min sensibilità): thresh alta → serve piega marcata
+  CURL_THRESH = 0.25 + (v-1)*0.035;
 });
 document.getElementById('ssl').dispatchEvent(new Event('input'));
 
 // ══════════════════════════════════════════════════════
 //  MODALITÀ
 // ══════════════════════════════════════════════════════
-let dwellMode = false;
+let mode = 'curl'; // 'curl' | 'dwell'
 function setMode(m){
-  dwellMode = m==='dwell';
-  document.getElementById('m-tap').classList.toggle('on',   !dwellMode);
-  document.getElementById('m-dwell').classList.toggle('on', dwellMode);
-  // Reset tutte le mani
-  hands2.forEach(h=>{ if(h){ resetHand(h); } });
+  mode = m;
+  document.getElementById('m-curl').classList.toggle('on',  m==='curl');
+  document.getElementById('m-dwell').classList.toggle('on', m==='dwell');
+  document.getElementById('legend').style.display = m==='curl' ? 'block' : 'none';
+  hands2.forEach(h=>{ if(h) resetHS(h); });
 }
 
 // ══════════════════════════════════════════════════════
-//  TAP — dip-and-return con timer di sicurezza
+//  PER-HAND STATE
 // ══════════════════════════════════════════════════════
-function resetHand(h){
-  h.baseline=null; h.tapPhase='idle'; h.dipPeakY=0;
-  if(h.dipTimer){ clearTimeout(h.dipTimer); h.dipTimer=null; }
+function makeHS(idx){
+  const cursor = document.createElement('div');
+  cursor.className = 'hcursor h'+idx;
+  cursor.style.display = 'none';
+  document.getElementById('cam-wrap').appendChild(cursor);
+
+  // Dwell ring
+  const ring = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  ring.classList.add('dring');
+  ring.setAttribute('viewBox','0 0 52 52');
+  ring.innerHTML=`<circle cx="26" cy="26" r="21" fill="none" stroke="rgba(255,200,0,.2)" stroke-width="4"/>
+    <circle class="darc" cx="26" cy="26" r="21" fill="none" stroke="#ffcc00" stroke-width="4"
+      stroke-linecap="round" stroke-dasharray="132" stroke-dashoffset="132"
+      transform="rotate(-90 26 26)"/>`;
+  document.getElementById('cam-wrap').appendChild(ring);
+
+  // Curl meter bar
+  const meter = document.createElement('div');
+  meter.className = 'cmeter';
+  meter.style.bottom = (idx * 6 + 2) + 'px';
+  meter.innerHTML = `<div class="cmeter-fill" style="background:${idx===0?'#6c63ff':'#ff5050'}"></div>`;
+  document.getElementById('cam-wrap').appendChild(meter);
+
+  return {
+    idx, cursor, ring, meter,
+    smooth: makeSmoother(5),
+    // curl state
+    curled: false,
+    curlStart: null,       // quando è iniziata la piega
+    curlDragStarted: false,
+    prevCurled: false,
+    clickCool: false,
+    lastClickTime: 0,
+    // dwell
+    dwellStart: null,
+    dwellLX: 0, dwellLY: 0,
+    dwellCool: false,
+    // drag
+    dragging: false,
+  };
+}
+
+function resetHS(h){
+  h.curled=false; h.curlStart=null; h.curlDragStarted=false;
+  h.prevCurled=false; h.clickCool=false;
   h.dwellStart=null; h.dragging=false;
-  h.cursor.className='hand-cursor h'+h.idx;
+  if(h.dragging){ socket.emit('drag_end',{}); }
+  h.cursor.className='hcursor h'+h.idx;
   h.ring.style.display='none';
 }
 
-function processTap(h, rawY, mx, my, inScreen){
-  if(!inScreen){ resetHand(h); return; }
-
-  // Aggiorna baseline solo in idle
-  if(h.tapPhase==='idle'){
-    if(h.baseline===null) h.baseline=rawY;
-    else h.baseline = h.baseline*0.96 + rawY*0.04;
-
-    if(rawY > h.baseline + DIP_ENTER){
-      h.tapPhase='dipping';
-      h.dipPeakY=rawY;
-      h.cursor.classList.add('dipping');
-      // Safety: se non torna su entro 1.5s → reset
-      h.dipTimer = setTimeout(()=>{
-        h.tapPhase='idle';
-        h.dipTimer=null;
-        h.cursor.classList.remove('dipping');
-      }, 1500);
-    }
-
-  } else if(h.tapPhase==='dipping'){
-    h.dipPeakY = Math.max(h.dipPeakY, rawY);
-
-    if(rawY < h.dipPeakY - DIP_RETURN){
-      // Risalita → tap confermato
-      if(h.dipTimer){ clearTimeout(h.dipTimer); h.dipTimer=null; }
-      const excursion = h.dipPeakY - h.baseline;
-
-      if(excursion >= DIP_MIN && !h.tapCool){
-        const now = Date.now();
-        const isDouble = (now - h.lastTapTime) < 380;
-        h.lastTapTime = now;
-        fireClick(h, mx, my, isDouble);
-      }
-      h.tapPhase='idle';
-      h.cursor.classList.remove('dipping');
-    }
-
-  } else if(h.tapPhase==='cooldown'){
-    // aspetta cooldown
-  }
-}
-
 // ══════════════════════════════════════════════════════
-//  DRAG — se il dip dura > 600ms senza return → drag
+//  CURL MODE — logica per singola mano
 // ══════════════════════════════════════════════════════
-function processDrag(h, rawY, mx, my, inScreen){
-  if(!inScreen){ endDrag(h); return; }
-  if(h.dragging){
-    // Muovi durante il drag
-    socket.emit('move_drag', {x:clamp(mx), y:clamp(my)});
-    h.cursor.classList.add('dragging');
-    document.getElementById('drag-flash').classList.add('show');
-    document.getElementById('hact').textContent='🟠 DRAG';
+function processCurl(h, curlScore, mx, my, inScreen){
+  // Aggiorna meter visivo
+  const fill = h.meter.querySelector('.cmeter-fill');
+  fill.style.width = (curlScore*100)+'%';
+
+  const isCurled = curlScore >= CURL_THRESH;
+  h.cursor.classList.toggle('curled', isCurled && !h.dragging);
+
+  const wasntCurled = !h.prevCurled;
+  const justCurled  = isCurled && wasntCurled;
+  const justStraight= !isCurled && h.prevCurled;
+  h.prevCurled = isCurled;
+
+  if(!inScreen){
+    if(h.dragging){ socket.emit('drag_end',{}); h.dragging=false; }
+    h.curlStart=null; h.curlDragStarted=false;
     return;
   }
 
-  // Controlla se il dip è diventato un drag
-  if(h.tapPhase==='dipping'){
-    const elapsed = h.dipTimer ? (1500 - /* remaining */ 0) : 0;
-    // Stima: se il dito è rimasto giù per > 600ms → drag
-    if(!h._dipStart) h._dipStart = Date.now();
-    if(Date.now() - h._dipStart > 600){
-      // Inizia drag
-      h.dragging=true;
-      h._dipStart=null;
-      if(h.dipTimer){ clearTimeout(h.dipTimer); h.dipTimer=null; }
-      h.tapPhase='cooldown';
-      socket.emit('drag_start', {x:clamp(mx), y:clamp(my)});
+  // ── Inizio piega ──
+  if(justCurled){
+    h.curlStart = Date.now();
+    h.curlDragStarted = false;
+  }
+
+  // ── Mantenuta piegata ──
+  if(isCurled && h.curlStart){
+    const held = Date.now() - h.curlStart;
+
+    // Drag: piega tenuta > 500ms
+    if(held > 500 && !h.curlDragStarted && !h.dragging){
+      h.curlDragStarted = true;
+      h.dragging = true;
+      socket.emit('drag_start', {x:clamp01(mx), y:clamp01(my)});
+      h.cursor.classList.add('dragging');
+      flashEl('drag');
+      setHact('🟠 DRAG');
     }
-  } else {
-    h._dipStart=null;
-  }
-}
 
-function endDrag(h){
-  if(h.dragging){
-    socket.emit('drag_end', {});
-    h.dragging=false;
-    h.cursor.classList.remove('dragging');
-    document.getElementById('drag-flash').classList.remove('show');
-    h.tapPhase='idle';
-    h._dipStart=null;
+    if(h.dragging){
+      socket.emit('move_drag', {x:clamp01(mx), y:clamp01(my)});
+    }
+  }
+
+  // ── Fine piega (raddrizza dito) ──
+  if(justStraight){
+    if(h.dragging){
+      // Fine drag
+      socket.emit('drag_end', {});
+      h.dragging = false;
+      h.curlDragStarted = false;
+      h.cursor.classList.remove('dragging');
+      flashEl('drag');
+      setHact('drag end');
+    } else if(h.curlStart && !h.clickCool){
+      // Click — era una piega breve
+      const now = Date.now();
+      const isDouble = (now - h.lastClickTime) < 400;
+      h.lastClickTime = now;
+      h.curlStart = null;
+      fireClick(h, mx, my, isDouble);
+    }
+    h.curlStart = null;
   }
 }
 
 // ══════════════════════════════════════════════════════
-//  DWELL
+//  DWELL MODE
 // ══════════════════════════════════════════════════════
-const DWELL_MS=1000, DWELL_MOV=0.025;
+const DWELL_MS=1100, DWELL_MOV=0.028;
 
 function processDwell(h, rawX, rawY, mx, my, inScreen){
+  const ring=h.ring, arc=ring.querySelector('.darc');
   if(!inScreen){
-    h.dwellStart=null; h.ring.style.display='none'; return;
+    h.dwellStart=null; ring.style.display='none';
+    return;
   }
+
+  // Doppio click in dwell: due dwell ravvicinati (< 400ms cooldown finito)
   if(h.dwellStart===null){
-    h.dwellStart=Date.now(); h.dwellLX=rawX; h.dwellLY=rawY; return;
+    h.dwellStart=Date.now(); h.dwellLX=rawX; h.dwellLY=rawY;
   }
   const moved=Math.hypot(rawX-h.dwellLX, rawY-h.dwellLY);
   if(moved>DWELL_MOV){
-    h.dwellStart=Date.now(); h.dwellLX=rawX; h.dwellLY=rawY;
+    // Se si muove durante il dwell → drag
+    if(h.dragging){
+      socket.emit('move_drag',{x:clamp01(mx),y:clamp01(my)});
+    } else if(h.dwellStart && (Date.now()-h.dwellStart)>600){
+      // Stava per completare il dwell ma si è mosso → drag start
+      h.dragging=true;
+      socket.emit('drag_start',{x:clamp01(mx),y:clamp01(my)});
+      h.cursor.classList.add('dragging');
+      flashEl('drag');
+    } else {
+      h.dwellStart=Date.now(); h.dwellLX=rawX; h.dwellLY=rawY;
+      ring.style.display='none';
+    }
+    return;
   }
-  const pct=Math.min(1,(Date.now()-h.dwellStart)/DWELL_MS);
-  const arc=h.ring.querySelector('.darc');
 
-  h.ring.style.display='block';
-  h.ring.style.left=(rawX*100)+'%';
-  h.ring.style.top=(rawY*100)+'%';
-  arc.style.strokeDashoffset=125.6*(1-pct);
+  if(h.dragging){
+    // Fermo → fine drag
+    socket.emit('drag_end',{});
+    h.dragging=false;
+    h.cursor.classList.remove('dragging');
+    ring.style.display='none';
+    return;
+  }
+
+  const pct=Math.min(1,(Date.now()-h.dwellStart)/DWELL_MS);
+  ring.style.display='block';
+  ring.style.left=(rawX*100)+'%';
+  ring.style.top=(rawY*100)+'%';
+  arc.style.strokeDashoffset=132*(1-pct);
 
   if(pct>=1 && !h.dwellCool){
     h.dwellCool=true;
-    h.ring.style.display='none';
+    ring.style.display='none';
     const now=Date.now();
-    const isDouble=(now-h.lastTapTime)<500;
-    h.lastTapTime=now;
+    const isDouble=(now-h.lastClickTime)<500;
+    h.lastClickTime=now;
     fireClick(h,mx,my,isDouble);
-    setTimeout(()=>{ h.dwellCool=false; h.dwellStart=null; },800);
+    setTimeout(()=>{ h.dwellCool=false; h.dwellStart=null; },750);
   }
 }
 
 // ══════════════════════════════════════════════════════
-//  FIRE CLICK
+//  FIRE CLICK + FEEDBACK
 // ══════════════════════════════════════════════════════
-const flash=document.getElementById('flash');
 function fireClick(h, mx, my, isDouble){
-  const cx=clamp(mx), cy=clamp(my);
-  socket.emit('move', {x:cx, y:cy});
-
+  if(h.clickCool) return;
+  const cx=clamp01(mx), cy=clamp01(my);
+  h.clickCool=true;
+  socket.emit('move',{x:cx,y:cy});
   if(isDouble){
-    socket.emit('double_click', {x:cx, y:cy});
-    flash.className='show dbl';
-    document.getElementById('hact').textContent='⚡ DOPPIO CLICK!';
+    socket.emit('double_click',{x:cx,y:cy});
+    flashEl('dbl'); setHact('⚡ DBL CLICK');
   } else {
-    socket.emit('click', {button:'left', x:cx, y:cy});
-    flash.className='show';
-    document.getElementById('hact').textContent='✅ CLICK';
+    socket.emit('click',{button:'left',x:cx,y:cy});
+    flashEl('click'); setHact('✅ CLICK');
   }
   h.cursor.classList.add('clicked');
-  h.tapCool=true;
-  setTimeout(()=>{ h.tapCool=false; h.cursor.classList.remove('clicked'); flash.className=''; },220);
+  setTimeout(()=>{ h.cursor.classList.remove('clicked'); h.clickCool=false; }, 300);
 }
+
+const flashDiv=document.getElementById('flash');
+let flashTimer=null;
+function flashEl(type){
+  if(flashTimer) clearTimeout(flashTimer);
+  flashDiv.className=type;
+  flashTimer=setTimeout(()=>{ flashDiv.className=''; },150);
+}
+
+function setHact(txt){ document.getElementById('hact').textContent=txt; }
 
 // ══════════════════════════════════════════════════════
 //  CALIBRAZIONE
 // ══════════════════════════════════════════════════════
 const CORNERS=['Top-Left ↖','Top-Right ↗','Bottom-Right ↘','Bottom-Left ↙'];
 const CEMO=['↖','↗','↘','↙'];
-let calibPts=[], H=null, appState='start', holdStart=null;
+let calibPts=[],H=null,appState='start',holdStart=null;
 const HOLD_MS=1500;
 
 function startCalib(){
   calibPts=[]; H=null; appState='calibrating';
-  hands2.forEach(h=>{ if(h) resetHand(h); });
+  hands2.forEach(h=>resetHS(h));
   for(let i=0;i<4;i++){
     const c=document.getElementById('cm-'+i);
     c.style.display='flex'; c.className='cm cm-w';
@@ -529,13 +554,12 @@ function startCalib(){
   document.getElementById('hold-wrap').style.display='block';
   document.getElementById('sg').style.display='block';
   document.getElementById('hud').style.display='none';
-  hands2.forEach(h=>{ if(h){ h.cursor.style.display='none'; h.ring.style.display='none'; }});
+  hands2.forEach(h=>{ h.cursor.style.display='none'; h.ring.style.display='none'; h.meter.style.display='none'; });
   pill('state','yellow','⬤ Calibrazione');
   updateCalibUI();
 }
 function updateCalibUI(){
-  const s=calibPts.length;
-  if(s>=4){ finishCalib(); return; }
+  const s=calibPts.length; if(s>=4){ finishCalib(); return; }
   for(let i=0;i<4;i++){
     const cm=document.getElementById('cm-'+i), sd=document.getElementById('sd'+i);
     if(i<s)       { cm.className='cm cm-d'; sd.className='sd done'; }
@@ -558,44 +582,41 @@ function finishCalib(){
   document.getElementById('hud').style.display='flex';
   document.getElementById('btn-recalib').style.display='flex';
   document.getElementById('mode-row').style.display='flex';
+  document.getElementById('legend').style.display = mode==='curl'?'block':'none';
   for(let i=0;i<4;i++) document.getElementById('cm-'+i).className='cm cm-d';
-  hands2.forEach(h=>{ if(h) h.cursor.style.display='block'; });
+  hands2.forEach(h=>{ h.cursor.style.display='block'; h.meter.style.display='block'; });
   pill('state','green','⬤ Attivo 👆');
   setTimeout(()=>{ for(let i=0;i<4;i++) document.getElementById('cm-'+i).style.display='none'; },2000);
 }
 
 // ══════════════════════════════════════════════════════
-//  MEDIAPIPE — 2 MANI
+//  MEDIAPIPE
 // ══════════════════════════════════════════════════════
 const video=document.getElementById('video');
 const canvas=document.getElementById('overlay-canvas');
 const ctx=canvas.getContext('2d');
 
-// Crea stato per max 2 mani
-let hands2=[makeHandState(0), makeHandState(1)];
+let hands2=[makeHS(0),makeHS(1)];
 hands2[1].cursor.style.display='none';
 hands2[1].ring.style.display='none';
+hands2[1].meter.style.display='none';
 document.getElementById('hg1').style.display='none';
 
-const mpHands=new Hands({ locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
-mpHands.setOptions({
-  maxNumHands:2,          // ← DUE MANI
-  modelComplexity:1,
-  minDetectionConfidence:0.80,
-  minTrackingConfidence:0.75
-});
-mpHands.onResults(onResults);
+const mpH=new Hands({ locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
+mpH.setOptions({ maxNumHands:2, modelComplexity:1,
+  minDetectionConfidence:0.80, minTrackingConfidence:0.75 });
+mpH.onResults(onResults);
 
-let processing=false;
+let proc=false;
 function frameLoop(){
   requestAnimationFrame(frameLoop);
-  if(video.readyState<2||processing) return;
-  processing=true;
-  mpHands.send({image:video}).then(()=>{ processing=false; }).catch(()=>{ processing=false; });
+  if(video.readyState<2||proc) return;
+  proc=true;
+  mpH.send({image:video}).then(()=>{ proc=false; }).catch(()=>{ proc=false; });
 }
 
-const COLORS=['rgba(0,200,255,.55)','rgba(255,100,100,.55)'];
-const LCOLS =['rgba(108,99,255,.9)','rgba(255,80,80,.9)'];
+const HCOLS=['rgba(0,180,255,.55)','rgba(255,80,80,.55)'];
+const LCOLS=['rgba(108,99,255,.9)','rgba(255,80,80,.9)'];
 
 function onResults(results){
   canvas.width=video.videoWidth||canvas.offsetWidth;
@@ -603,66 +624,69 @@ function onResults(results){
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
   const detected=results.multiHandLandmarks||[];
-  const nHands=detected.length;
+  const nH=detected.length;
 
-  // Nascondi cursori mani non presenti
+  // Gestisci hands non presenti
   for(let i=0;i<2;i++){
-    const active=i<nHands;
-    hands2[i].cursor.style.display = active ? 'block' : 'none';
-    document.getElementById('hg'+i).style.display = active ? 'flex' : 'none';
-    if(!active){ resetHand(hands2[i]); }
+    const active=i<nH;
+    if(!active && hands2[i].cursor.style.display!=='none'){
+      hands2[i].cursor.style.display='none';
+      document.getElementById('hg'+i).style.display='none';
+      resetHS(hands2[i]);
+    }
+    if(active && hands2[i].cursor.style.display==='none' && appState==='active'){
+      hands2[i].cursor.style.display='block';
+      document.getElementById('hg'+i).style.display='flex';
+    }
   }
 
-  if(nHands===0){
-    if(appState==='calibrating'){
-      holdStart=null;
-      document.getElementById('hold-fill').style.width='0%';
-    }
-    document.getElementById('hact').textContent='idle';
+  if(nH===0){
+    if(appState==='calibrating'){ holdStart=null; document.getElementById('hold-fill').style.width='0%'; }
     return;
   }
 
-  // ── CALIBRAZIONE: usa solo la prima mano ──────────────
+  // ── CALIBRAZIONE ──
   if(appState==='calibrating'){
     const lm=detected[0];
-    const rawX=lm[8].x, rawY=lm[8].y;
-    drawConnectors(ctx,lm,HAND_CONNECTIONS,{color:COLORS[0],lineWidth:3});
+    const rx=lm[8].x, ry=lm[8].y;
+    drawConnectors(ctx,lm,HAND_CONNECTIONS,{color:HCOLS[0],lineWidth:3});
     drawLandmarks(ctx,lm,{color:'rgba(255,255,255,.8)',lineWidth:1,radius:3});
-    ctx.beginPath(); ctx.arc(rawX*canvas.width,rawY*canvas.height,9,0,Math.PI*2);
+    ctx.beginPath(); ctx.arc(rx*canvas.width,ry*canvas.height,9,0,Math.PI*2);
     ctx.fillStyle='rgba(255,210,0,.9)'; ctx.fill();
 
-    if(!holdStart) holdStart={t:Date.now(),x:rawX,y:rawY};
+    if(!holdStart) holdStart={t:Date.now(),x:rx,y:ry};
     else {
-      const moved=Math.hypot(rawX-holdStart.x,rawY-holdStart.y);
-      if(moved>0.028){ holdStart={t:Date.now(),x:rawX,y:rawY}; document.getElementById('hold-fill').style.width='0%'; }
+      const mv=Math.hypot(rx-holdStart.x,ry-holdStart.y);
+      if(mv>0.028){ holdStart={t:Date.now(),x:rx,y:ry}; document.getElementById('hold-fill').style.width='0%'; }
       else {
         const el=Date.now()-holdStart.t;
         document.getElementById('hold-fill').style.width=Math.min(100,(el/HOLD_MS)*100)+'%';
-        if(el>=HOLD_MS){ calibPts.push([rawX,rawY]); holdStart=null; updateCalibUI(); }
+        if(el>=HOLD_MS){ calibPts.push([rx,ry]); holdStart=null; updateCalibUI(); }
       }
     }
     return;
   }
   if(appState!=='active'||!H) return;
 
-  // ── ACTIVE: processa ogni mano ──────────────────────────
-  for(let i=0;i<nHands;i++){
+  // ── ACTIVE ──
+  for(let i=0;i<nH;i++){
     const lm=detected[i];
     const h=hands2[i];
 
-    // Disegna
-    drawConnectors(ctx,lm,HAND_CONNECTIONS,{color:COLORS[i],lineWidth:3});
+    // Disegna mano
+    drawConnectors(ctx,lm,HAND_CONNECTIONS,{color:HCOLS[i],lineWidth:3});
     drawLandmarks(ctx,lm,{color:'rgba(255,255,255,.7)',lineWidth:1,radius:3});
-    ctx.beginPath(); ctx.arc(lm[8].x*canvas.width,lm[8].y*canvas.height,8,0,Math.PI*2);
+    // Cerchio su indice
+    ctx.beginPath(); ctx.arc(lm[8].x*canvas.width,lm[8].y*canvas.height,7,0,Math.PI*2);
     ctx.fillStyle=LCOLS[i]; ctx.fill();
 
     const rawX=lm[8].x, rawY=lm[8].y;
     const [sx,sy]=h.smooth(rawX,rawY);
     const [mx,my]=applyH(H,sx,sy);
     const inScreen=mx>=-0.05&&mx<=1.05&&my>=-0.05&&my<=1.05;
-    const pointing=isPointing(lm);
+    const curl=getCurlScore(lm);
 
-    // Cursore visivo
+    // Cursore
     h.cursor.style.left=(rawX*100)+'%';
     h.cursor.style.top=(rawY*100)+'%';
 
@@ -671,31 +695,21 @@ function onResults(results){
       document.getElementById('hy').textContent=my.toFixed(2);
     }
 
-    // Invia hover
-    if(inScreen && !h.dragging){
-      socket.emit('move',{x:clamp(mx),y:clamp(my)});
-    }
-
-    // Status HUD per mano
+    // HUD stato mano
     const hgEl=document.getElementById('hg'+i);
-    if(!pointing){
-      hgEl.textContent= i===0 ? '🤚 mano' : '🤚 mano2';
-      hgEl.className='hb r';
-      resetHand(h);
-      continue;
+    const curlPct=Math.round(curl*100);
+    hgEl.textContent=`${i===0?'☝️':'✌️'} ${curlPct}%`;
+    hgEl.className= curl>=CURL_THRESH ? 'hb warn' : (inScreen ? 'hb act' : 'hb');
+
+    // Hover
+    if(inScreen && !h.dragging){
+      socket.emit('move',{x:clamp01(mx),y:clamp01(my)});
     }
-    hgEl.textContent= i===0 ? '☝️ indice' : '☝️ ind.2';
-    hgEl.className='hb g';
 
-    // ── DRAG ──
-    processDrag(h, rawY, mx, my, inScreen);
-    if(h.dragging) continue;
-
-    // ── TAP o DWELL ──
-    if(dwellMode){
-      processDwell(h, rawX, rawY, mx, my, inScreen);
+    if(mode==='curl'){
+      processCurl(h, curl, mx, my, inScreen);
     } else {
-      processTap(h, rawY, mx, my, inScreen);
+      processDwell(h, rawX, rawY, mx, my, inScreen);
     }
   }
 }
@@ -707,13 +721,13 @@ let videoTrack=null, apiZoom=false;
 document.getElementById('zsl').addEventListener('input', async function(){
   const z=parseFloat(this.value);
   document.getElementById('zv').textContent=z.toFixed(2)+'×';
-  if(z<1.0){
+  if(z<=1.0){
     video.style.transform=`scale(${z})`;
-    if(apiZoom && videoTrack){ try{ await videoTrack.applyConstraints({advanced:[{zoom:1}]}); }catch(e){} }
+    if(apiZoom&&videoTrack){ try{await videoTrack.applyConstraints({advanced:[{zoom:1}]});}catch(e){} }
   } else {
     video.style.transform='scale(1)';
-    if(apiZoom && videoTrack){ try{ await videoTrack.applyConstraints({advanced:[{zoom:z}]}); }catch(e){} }
-    else { video.style.transform=`scale(${z})`; }
+    if(apiZoom&&videoTrack){ try{await videoTrack.applyConstraints({advanced:[{zoom:z}]});}catch(e){}; }
+    else video.style.transform=`scale(${z})`;
   }
 });
 
@@ -725,42 +739,32 @@ async function startCamera(){
   btn.disabled=true; btn.textContent='⏳ Avvio...';
   let stream=null;
 
-  // Cerca ultrawide
   try{
     const devs=await navigator.mediaDevices.enumerateDevices();
-    const cams=devs.filter(d=>d.kind==='videoinput');
-    const uw=cams.find(c=>/ultra|wide|0\.6|gran/i.test(c.label));
+    const uw=devs.filter(d=>d.kind==='videoinput').find(c=>/ultra|wide|0\.6|gran/i.test(c.label));
     if(uw) stream=await navigator.mediaDevices.getUserMedia({video:{deviceId:{exact:uw.deviceId}}}).catch(()=>null);
   }catch(e){}
 
   if(!stream){
-    for(const cfg of[
-      {video:{facingMode:{exact:'environment'}}},
-      {video:{facingMode:'environment'}},
-      {video:{facingMode:'user'}},
-      {video:true}
-    ]){
+    for(const cfg of[{video:{facingMode:{exact:'environment'}}},{video:{facingMode:'environment'}},{video:{facingMode:'user'}},{video:true}]){
       try{ stream=await navigator.mediaDevices.getUserMedia(cfg); break; }catch(e){}
     }
   }
-
-  if(!stream){ btn.disabled=false; btn.textContent='📷 Avvia Camera'; alert('Camera non disponibile.'); return; }
+  if(!stream){ btn.disabled=false; btn.textContent='📷 Avvia Camera'; alert('Camera non disponibile'); return; }
 
   videoTrack=stream.getVideoTracks()[0];
   const caps=videoTrack.getCapabilities?videoTrack.getCapabilities():{};
   if(caps.zoom){
     apiZoom=true;
     try{ await videoTrack.applyConstraints({advanced:[{zoom:caps.zoom.min||1}]}); }catch(e){}
-    const sl=document.getElementById('zsl'); sl.max=caps.zoom.max||5;
+    document.getElementById('zsl').max=caps.zoom.max||5;
   }
-
   video.srcObject=stream;
   await new Promise(r=>{ video.onloadedmetadata=r; });
   await video.play();
   btn.textContent='✅ Camera attiva';
   document.getElementById('ctrl-row').style.display='flex';
-  frameLoop();
-  startCalib();
+  frameLoop(); startCalib();
 }
 
 document.getElementById('btn-start').addEventListener('click',startCamera);
