@@ -11,6 +11,8 @@
       font-family:'Segoe UI',sans-serif;
       height:100dvh; display:flex; flex-direction:column; overflow:hidden;
     }
+
+    /* ── TOP BAR ── */
     #top-bar {
       padding:8px 14px; background:#12121f;
       display:flex; justify-content:space-between; align-items:center;
@@ -24,6 +26,7 @@
     .pill.red    { background:#380008; color:#ff4466; }
     .pill.yellow { background:#382800; color:#ffcc00; }
 
+    /* ── BUTTON ROW ── */
     #btn-row {
       padding:8px 14px; background:#12121f;
       display:flex; gap:8px; flex-shrink:0; border-bottom:1px solid #222;
@@ -34,103 +37,141 @@
     }
     .btn-start   { background:linear-gradient(135deg,#6c63ff,#00d4ff); color:#fff; }
     .btn-start:disabled { background:#2a2a40; color:#666; }
-    .btn-recalib { background:#2a2a40; color:#aaa; display:none; }
+    .btn-secondary { background:#2a2a40; color:#aaa; display:none; }
 
-    #zoom-row {
-      padding:6px 14px; background:#0f0f1e;
-      display:none; align-items:center; gap:10px;
-      border-bottom:1px solid #222; flex-shrink:0;
+    /* ── CONTROLS ROW ── */
+    #controls-row {
+      display:none; flex-direction:column;
+      background:#0d0d1a; border-bottom:1px solid #1a1a2e; flex-shrink:0;
     }
-    #zoom-row label { font-size:12px; color:#888; white-space:nowrap; }
-    #zoom-slider { flex:1; accent-color:#6c63ff; }
-    #zoom-val { font-size:12px; color:#00d4ff; min-width:30px; text-align:right; }
-
-    /* Sensibilità tap */
-    #sens-row {
-      padding:6px 14px; background:#0f0f1e;
-      display:none; align-items:center; gap:10px;
-      border-bottom:1px solid #222; flex-shrink:0;
+    .ctrl-line {
+      display:flex; align-items:center; gap:10px;
+      padding:5px 14px; border-bottom:1px solid #111;
     }
-    #sens-row label { font-size:12px; color:#888; white-space:nowrap; }
-    #sens-slider { flex:1; accent-color:#ff6b6b; }
-    #sens-val { font-size:12px; color:#ff6b6b; min-width:50px; text-align:right; }
+    .ctrl-line:last-child { border-bottom:none; }
+    .ctrl-label { font-size:11px; color:#666; width:80px; flex-shrink:0; }
+    .ctrl-slider { flex:1; accent-color:#6c63ff; height:4px; }
+    .ctrl-val { font-size:11px; color:#00d4ff; width:46px; text-align:right; }
 
+    /* Selector mode */
+    #mode-row {
+      display:none; flex-shrink:0;
+      background:#0d0d1a; border-bottom:1px solid #1a1a2e;
+      padding:6px 14px; gap:8px; align-items:center;
+    }
+    .mode-btn {
+      flex:1; padding:7px; border:1.5px solid #333; border-radius:8px;
+      background:transparent; color:#666; font-size:12px; font-weight:600; cursor:pointer;
+    }
+    .mode-btn.active { border-color:#6c63ff; color:#fff; background:rgba(108,99,255,0.15); }
+
+    /* ── CAMERA ── */
     #cam-wrap {
       position:relative; flex:1; overflow:hidden;
-      background:#111; min-height:0;
+      background:#000; min-height:0;
     }
-    #video { width:100%; height:100%; object-fit:cover; display:block; }
+    /* Wrapper per dezoom CSS */
+    #video-wrap {
+      position:absolute; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      overflow:hidden;
+    }
+    #video {
+      width:100%; height:100%; object-fit:cover; display:block;
+      transform-origin:center center;
+      transition:transform 0.1s;
+    }
     #overlay-canvas { position:absolute; inset:0; width:100%; height:100%; }
 
+    /* Screen guide */
     #screen-guide {
-      position:absolute; inset:10%; border:2px dashed rgba(255,255,255,0.2);
-      border-radius:6px; pointer-events:none; z-index:2; display:none;
+      position:absolute; inset:8%;
+      border:2px dashed rgba(255,255,255,0.25);
+      border-radius:8px; pointer-events:none; z-index:2; display:none;
     }
-    #screen-guide::after {
-      content:'inquadra lo schermo PC';
-      position:absolute; bottom:-22px; left:0; right:0;
-      text-align:center; font-size:11px; color:rgba(255,255,255,0.4);
+    #screen-guide span {
+      position:absolute; bottom:-20px; left:0; right:0;
+      text-align:center; font-size:10px; color:rgba(255,255,255,0.35);
     }
 
-    .corner-marker {
-      position:absolute; width:54px; height:54px; border-radius:50%;
+    /* Corner markers */
+    .cm {
+      position:absolute; width:52px; height:52px; border-radius:50%;
       display:flex; align-items:center; justify-content:center;
-      font-size:13px; font-weight:bold; border:3px solid; transition:all 0.3s;
+      font-size:12px; font-weight:bold; border:3px solid; transition:all 0.25s;
     }
-    .cm-waiting { border-color:#444; background:rgba(60,60,60,0.3); color:#555; }
-    .cm-active  { border-color:#ffcc00; background:rgba(255,204,0,0.25); color:#ffcc00; animation:pulse 0.8s infinite; }
-    .cm-done    { border-color:#00ff88; background:rgba(0,255,136,0.2); color:#00ff88; }
-    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.2)} }
+    .cm-w { border-color:#444; background:rgba(50,50,50,0.35); color:#555; }
+    .cm-a { border-color:#ffcc00; background:rgba(255,204,0,0.2); color:#ffcc00; animation:pulse 0.7s infinite; }
+    .cm-d { border-color:#00ff88; background:rgba(0,255,136,0.15); color:#00ff88; }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.18)} }
 
     #step-dots {
       position:absolute; top:10px; left:0; right:0;
       display:flex; justify-content:center; gap:10px; z-index:10;
     }
-    .sdot { width:12px; height:12px; border-radius:50%; background:#333; transition:0.3s; }
+    .sdot { width:11px; height:11px; border-radius:50%; background:#2a2a2a; transition:0.3s; }
     .sdot.done   { background:#00ff88; }
-    .sdot.active { background:#ffcc00; animation:pulse 0.8s infinite; }
+    .sdot.active { background:#ffcc00; animation:pulse 0.7s infinite; }
 
     #instr {
-      position:absolute; bottom:22%; left:6%; right:6%;
-      background:rgba(0,0,0,0.88); border-radius:14px;
+      position:absolute; bottom:20%; left:6%; right:6%;
+      background:rgba(0,0,0,0.9); border-radius:14px;
       padding:14px 18px; text-align:center;
       font-size:15px; line-height:1.7; z-index:10;
     }
     #hold-wrap {
-      position:absolute; bottom:14%; left:10%; right:10%;
-      height:8px; background:#222; border-radius:4px; overflow:hidden; z-index:10;
+      position:absolute; bottom:13%; left:10%; right:10%;
+      height:8px; background:#1a1a1a; border-radius:4px; overflow:hidden; z-index:10;
     }
     #hold-fill {
       height:100%; width:0%;
       background:linear-gradient(90deg,#6c63ff,#00d4ff);
       border-radius:4px; transition:width 0.04s linear;
     }
+
+    /* HUD */
     #active-hud {
-      position:absolute; top:8px; left:8px; right:8px;
-      display:flex; gap:6px; z-index:5; flex-wrap:wrap;
+      position:absolute; bottom:8px; left:8px; right:8px;
+      display:flex; gap:5px; z-index:5; flex-wrap:wrap; justify-content:center;
     }
     .hbox {
-      background:rgba(0,0,0,0.78); border-radius:8px;
-      padding:4px 9px; font-size:11px; border:1px solid #2a2a40;
+      background:rgba(0,0,0,0.8); border-radius:7px;
+      padding:3px 9px; font-size:11px; border:1px solid #1e1e30;
     }
     .hbox b { color:#00d4ff; }
 
-    /* Cursore con ring di feedback */
-    #cdot {
-      position:absolute; width:24px; height:24px; border-radius:50%;
-      background:rgba(108,99,255,0.8); border:2px solid rgba(255,255,255,0.8);
-      transform:translate(-50%,-50%); pointer-events:none; z-index:6;
-      transition:background 0.08s, width 0.08s, height 0.08s;
+    /* Dwell ring */
+    #dwell-ring {
+      position:absolute; pointer-events:none; z-index:8;
+      width:50px; height:50px; display:none;
+      transform:translate(-50%,-50%);
     }
-    #cdot.ready   { background:rgba(255,200,0,0.85); border-color:#ffcc00; }
-    #cdot.touching{ background:rgba(0,255,136,0.9);  border-color:#00ff88; width:34px; height:34px; }
 
-    /* Flash click */
-    #click-flash {
-      position:absolute; inset:0; background:rgba(0,255,136,0.15);
-      pointer-events:none; z-index:7; opacity:0; transition:opacity 0.08s;
+    /* Cursore */
+    #cdot {
+      position:absolute; width:20px; height:20px; border-radius:50%;
+      background:rgba(108,99,255,0.82); border:2px solid rgba(255,255,255,0.7);
+      transform:translate(-50%,-50%); pointer-events:none; z-index:6;
+      transition:background 0.08s, transform 0.05s;
+      display:none;
     }
-    #click-flash.show { opacity:1; }
+    #cdot.ready   { background:rgba(0,200,255,0.85); box-shadow:0 0 10px rgba(0,200,255,0.5); }
+    #cdot.dipping { background:rgba(255,200,0,0.9);  box-shadow:0 0 12px rgba(255,200,0,0.6); }
+    #cdot.clicked { background:rgba(0,255,136,0.95); transform:translate(-50%,-50%) scale(1.7); }
+
+    /* Flash */
+    #flash {
+      position:absolute; inset:0; background:rgba(0,255,136,0.12);
+      pointer-events:none; z-index:7; opacity:0; transition:opacity 0.07s;
+    }
+    #flash.show { opacity:1; }
+
+    /* Baseline debug bar */
+    #baseline-bar {
+      position:absolute; left:4px; right:4px; height:2px;
+      background:rgba(255,100,100,0.5); pointer-events:none; z-index:9;
+      display:none;
+    }
   </style>
 </head>
 <body>
@@ -141,55 +182,85 @@
 </div>
 <div id="btn-row">
   <button class="btn btn-start"   id="btn-start">📷 Avvia Camera</button>
-  <button class="btn btn-recalib" id="btn-recalib">🔄 Ricalibra</button>
+  <button class="btn btn-secondary" id="btn-recalib" style="display:none">🔄 Ricalibra</button>
 </div>
-<div id="zoom-row">
-  <label>🔍 Zoom:</label>
-  <input type="range" id="zoom-slider" min="1" max="5" step="0.1" value="1">
-  <span id="zoom-val">1.0×</span>
+
+<!-- Controls: zoom + sensibilità (visibili solo dopo avvio) -->
+<div id="controls-row">
+  <div class="ctrl-line">
+    <span class="ctrl-label">🔍 Zoom</span>
+    <input type="range" class="ctrl-slider" id="zoom-sl" min="0.4" max="5" step="0.05" value="1">
+    <span class="ctrl-val" id="zoom-v">1.0×</span>
+  </div>
+  <div class="ctrl-line">
+    <span class="ctrl-label">👆 Sensibilità</span>
+    <input type="range" class="ctrl-slider" id="sens-sl" min="1" max="9" step="1" value="5">
+    <span class="ctrl-val" id="sens-v">Media</span>
+  </div>
 </div>
-<div id="sens-row">
-  <label>👆 Sensibilità:</label>
-  <input type="range" id="sens-slider" min="1" max="10" step="1" value="5">
-  <span id="sens-val">Media</span>
+
+<!-- Selector modalità click -->
+<div id="mode-row">
+  <button class="mode-btn active" id="mode-tap"   onclick="setMode('tap')">👆 Tap</button>
+  <button class="mode-btn"        id="mode-dwell" onclick="setMode('dwell')">⏱ Dwell (1s)</button>
 </div>
 
 <div id="cam-wrap">
-  <video id="video" playsinline autoplay muted></video>
+  <div id="video-wrap">
+    <video id="video" playsinline autoplay muted></video>
+  </div>
   <canvas id="overlay-canvas"></canvas>
-  <div id="screen-guide"></div>
-  <div id="click-flash"></div>
+  <div id="screen-guide"><span>inquadra tutto lo schermo PC</span></div>
 
-  <div class="corner-marker cm-waiting" id="cm-0" style="top:8px;left:8px">TL</div>
-  <div class="corner-marker cm-waiting" id="cm-1" style="top:8px;right:8px">TR</div>
-  <div class="corner-marker cm-waiting" id="cm-2" style="bottom:8px;right:8px">BR</div>
-  <div class="corner-marker cm-waiting" id="cm-3" style="bottom:8px;left:8px">BL</div>
+  <div class="cm cm-w" id="cm-0" style="top:8px;left:8px">TL</div>
+  <div class="cm cm-w" id="cm-1" style="top:8px;right:8px">TR</div>
+  <div class="cm cm-w" id="cm-2" style="bottom:8px;right:8px">BR</div>
+  <div class="cm cm-w" id="cm-3" style="bottom:8px;left:8px">BL</div>
 
   <div id="step-dots" style="display:none">
     <div class="sdot" id="sd0"></div><div class="sdot" id="sd1"></div>
     <div class="sdot" id="sd2"></div><div class="sdot" id="sd3"></div>
   </div>
-  <div id="instr" style="display:none"></div>
+  <div id="instr"     style="display:none"></div>
   <div id="hold-wrap" style="display:none"><div id="hold-fill"></div></div>
+
   <div id="active-hud" style="display:none">
-    <div class="hbox" id="hg">🖐 hover</div>
-    <div class="hbox">vel: <b id="hv">0.000</b></div>
+    <div class="hbox" id="hg">🖐</div>
+    <div class="hbox">Y dip: <b id="hd">—</b></div>
     <div class="hbox">X:<b id="hx">—</b> Y:<b id="hy">—</b></div>
   </div>
-  <div id="cdot" style="display:none"></div>
+
+  <!-- Dwell ring SVG -->
+  <svg id="dwell-ring" viewBox="0 0 50 50">
+    <circle cx="25" cy="25" r="20" fill="none" stroke="rgba(255,200,0,0.3)" stroke-width="4"/>
+    <circle id="dwell-arc" cx="25" cy="25" r="20" fill="none"
+            stroke="#ffcc00" stroke-width="4" stroke-linecap="round"
+            stroke-dasharray="125.6" stroke-dashoffset="125.6"
+            transform="rotate(-90 25 25)"/>
+  </svg>
+
+  <div id="cdot"></div>
+  <div id="flash"></div>
+  <div id="baseline-bar"></div>
 </div>
 
 <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
 <script>
-// ── SOCKET ────────────────────────────────────────────────
+'use strict';
+
+// ══════════════════════════════════════════════════════════════
+//  SOCKET
+// ══════════════════════════════════════════════════════════════
 const socket = io({ transports:['websocket'] });
 socket.on('connect', ()=>{ pill('server','green','⬤ Server OK'); socket.emit('register',{role:'phone'}); });
 socket.on('disconnect', ()=>pill('server','red','⬤ Disconnesso'));
 function pill(id,cls,txt){ const e=document.getElementById('pill-'+id); e.className='pill '+cls; e.textContent=txt; }
 
-// ── HOMOGRAPHY ────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+//  HOMOGRAPHY
+// ══════════════════════════════════════════════════════════════
 function gaussElim(A,b){
   const n=b.length,M=A.map((r,i)=>[...r,b[i]]);
   for(let c=0;c<n;c++){
@@ -217,92 +288,163 @@ function applyH(H,x,y){
   return [(H[0][0]*x+H[0][1]*y+H[0][2])/w,(H[1][0]*x+H[1][1]*y+H[1][2])/w];
 }
 
-// ── STATO ─────────────────────────────────────────────────
-const CORNERS=['Top-Left ↖','Top-Right ↗','Bottom-Right ↘','Bottom-Left ↙'];
-const CEMO=['↖','↗','↘','↙'];
-let calibPts=[],H=null,state='start';
-let holdStart=null; const HOLD_MS=1500;
-let touchCool=false; const COOL_MS=600;
-
-// Smoothing posizione (media mobile su N frame)
-const POS_BUF=6;
-let posHistory=[];
+// ══════════════════════════════════════════════════════════════
+//  SMOOTHING — media mobile ponderata (più recente pesa di più)
+// ══════════════════════════════════════════════════════════════
+const SMOOTH_N = 5;
+let posHist = [];
 function smoothPos(x,y){
-  posHistory.push([x,y]);
-  if(posHistory.length>POS_BUF) posHistory.shift();
-  const sx=posHistory.reduce((s,p)=>s+p[0],0)/posHistory.length;
-  const sy=posHistory.reduce((s,p)=>s+p[1],0)/posHistory.length;
-  return [sx,sy];
-}
-
-// ── RILEVAMENTO TAP BASATO SU VELOCITÀ ─────────────────────
-// Teniamo uno storico della posizione Y del dito negli ultimi N frame
-// Quando il dito scende veloce (velocità Y positiva alta) → tap DOWN
-// Quando torna su (velocità Y negativa) → tap UP → questo è il click
-const VEL_BUF = 8;
-let yHistory = [];   // ultimi N valori Y del fingertip
-let tapState = 'idle'; // 'idle' | 'down'
-let tapPeakY = 0;
-
-// Soglia velocità: regolabile con slider (0.004 = bassa, 0.012 = alta)
-let TAP_DOWN_THRESH  = 0.006;
-let TAP_UP_THRESH    = -0.003;
-let TAP_MIN_EXCURSION = 0.015; // minima escursione verticale del tap
-
-const sensSlider = document.getElementById('sens-slider');
-const sensLabels = ['','Molto alta','Alta','Alta','Media','Media','Bassa','Bassa','Molto bassa','Minima','Minima'];
-sensSlider.addEventListener('input', ()=>{
-  const v = parseInt(sensSlider.value);
-  document.getElementById('sens-val').textContent = sensLabels[v];
-  // v=1 massima sens (soglie basse), v=10 minima sens (soglie alte)
-  TAP_DOWN_THRESH   = 0.002 + (v-1) * 0.0015;
-  TAP_UP_THRESH     = -(0.001 + (v-1) * 0.0008);
-  TAP_MIN_EXCURSION = 0.008 + (v-1) * 0.003;
-});
-sensSlider.dispatchEvent(new Event('input')); // init
-
-function updateVelocity(y){
-  yHistory.push(y);
-  if(yHistory.length > VEL_BUF) yHistory.shift();
-  if(yHistory.length < 3) return 0;
-  // Velocità = media delle differenze recenti
-  let vel=0;
-  for(let i=1;i<yHistory.length;i++) vel+=yHistory[i]-yHistory[i-1];
-  return vel/(yHistory.length-1);
-}
-
-function checkTap(rawY, onTap){
-  const vel = updateVelocity(rawY);
-  document.getElementById('hv').textContent = vel.toFixed(4);
-
-  if(tapState==='idle'){
-    if(vel > TAP_DOWN_THRESH){
-      tapState='down';
-      tapPeakY=rawY;
-    }
-  } else if(tapState==='down'){
-    tapPeakY=Math.max(tapPeakY, rawY);
-    if(vel < TAP_UP_THRESH){
-      const excursion = tapPeakY - yHistory[0];
-      if(excursion > TAP_MIN_EXCURSION && !touchCool){
-        onTap();
-        touchCool=true;
-        setTimeout(()=>{ touchCool=false; }, COOL_MS);
-      }
-      tapState='idle';
-      yHistory=[];
-    }
+  posHist.push([x,y]);
+  if(posHist.length > SMOOTH_N) posHist.shift();
+  let wx=0,wy=0,wt=0;
+  for(let i=0;i<posHist.length;i++){
+    const w=i+1; wx+=posHist[i][0]*w; wy+=posHist[i][1]*w; wt+=w;
   }
-  return vel;
+  return [wx/wt,wy/wt];
 }
 
-// ── CALIBRAZIONE ──────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+//  RILEVAMENTO TOCCO — METODO ADATTIVO DIP-AND-RETURN
+// ══════════════════════════════════════════════════════════════
+//
+//  Idea: il dito a riposo ha una posizione Y "baseline".
+//  Quando tocchi lo schermo il dito scende (Y aumenta) e poi risale.
+//  Rileviamo DIP (discesa) + RETURN (risalita) = tocco confermato.
+//  La baseline si auto-aggiorna lentamente durante l'hover.
+//
+let baseline     = null;    // Y a riposo del dito (auto-calibra)
+let tapPhase     = 'idle';  // 'idle' | 'dipping' | 'cooldown'
+let dipPeakY     = 0;       // massima Y raggiunta durante il dip
+let dipStartY    = 0;       // Y al momento dell'inizio del dip
+let tapCool      = false;
+
+// Soglie regolabili con slider sensibilità
+let DIP_ENTER    = 0.030;   // quanto scende per iniziare il dip
+let DIP_RETURN   = 0.018;   // quanto risale per confermare il tap
+let DIP_MIN      = 0.022;   // escursione minima totale valida
+
+const SENS_LABELS=['','Massima','Alta+','Alta','Media+','Media','Bassa+','Bassa','Minima+','Minima'];
+const sensSlider = document.getElementById('sens-sl');
+sensSlider.addEventListener('input', ()=>{
+  const v=parseInt(sensSlider.value);
+  document.getElementById('sens-v').textContent = SENS_LABELS[v]||v;
+  DIP_ENTER  = 0.014 + (v-1)*0.004;
+  DIP_RETURN = 0.010 + (v-1)*0.002;
+  DIP_MIN    = 0.012 + (v-1)*0.003;
+});
+sensSlider.dispatchEvent(new Event('input'));
+
+function isFingerPointing(lm){
+  // Controlla che l'indice sia esteso (non piegato)
+  // tip(8).y < PIP(6).y  → tip più in alto di PIP nella foto = dito dritto
+  const tipY = lm[8].y, pipY = lm[6].y, mcpY = lm[5].y;
+  return tipY < pipY - 0.02;
+}
+
+function processTap(rawY, inScreen, onTap){
+  // Aggiorna baseline solo in idle e non in movimento
+  if(tapPhase === 'idle'){
+    if(baseline === null) baseline = rawY;
+    else baseline = baseline * 0.97 + rawY * 0.03; // EMA lento
+
+    // Mostra linea baseline (debug visivo)
+    const bar = document.getElementById('baseline-bar');
+    bar.style.top = (rawY * 100) + '%';
+
+    if(rawY > baseline + DIP_ENTER){
+      // Inizio dip
+      tapPhase  = 'dipping';
+      dipPeakY  = rawY;
+      dipStartY = rawY;
+    }
+  } else if(tapPhase === 'dipping'){
+    dipPeakY = Math.max(dipPeakY, rawY);
+    document.getElementById('hd').textContent = (dipPeakY - (baseline||0)).toFixed(3);
+
+    if(rawY < dipPeakY - DIP_RETURN){
+      // Risalita confermata → calcola escursione totale
+      const excursion = dipPeakY - (baseline||0);
+      if(excursion >= DIP_MIN && inScreen && !tapCool){
+        onTap();
+        tapCool = true;
+        setTimeout(()=>{ tapCool=false; tapPhase='idle'; }, 550);
+        tapPhase = 'cooldown';
+      } else {
+        tapPhase = 'idle';
+      }
+    }
+    // Safety timeout: se rimane in dipping troppo a lungo → reset
+    if(!tapPhase._t) tapPhase._t = Date.now();
+    if(Date.now() - tapPhase._t > 1200){ tapPhase='idle'; tapPhase._t=null; }
+  } else if(tapPhase === 'cooldown'){
+    // Aspetta cooldown
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+//  DWELL MODE (alternativa: tieni fermo 1s = click)
+// ══════════════════════════════════════════════════════════════
+let dwellMode   = false;
+let dwellStart  = null;
+let dwellLastX  = 0, dwellLastY = 0;
+let dwellCool   = false;
+const DWELL_MS  = 1000;
+const DWELL_MOV = 0.025; // tolleranza movimento
+
+function setMode(m){
+  dwellMode = (m === 'dwell');
+  document.getElementById('mode-tap').classList.toggle('active',   !dwellMode);
+  document.getElementById('mode-dwell').classList.toggle('active',  dwellMode);
+  baseline = null; posHist = []; tapPhase = 'idle';
+  document.getElementById('dwell-ring').style.display = 'none';
+}
+
+function processDwell(rawX, rawY, inScreen, onTap){
+  const ring    = document.getElementById('dwell-ring');
+  const arc     = document.getElementById('dwell-arc');
+
+  if(!inScreen){ dwellStart=null; ring.style.display='none'; return; }
+
+  if(dwellStart === null){
+    dwellStart  = Date.now();
+    dwellLastX  = rawX; dwellLastY = rawY;
+    return;
+  }
+  const moved = Math.hypot(rawX-dwellLastX, rawY-dwellLastY);
+  if(moved > DWELL_MOV){ dwellStart=Date.now(); dwellLastX=rawX; dwellLastY=rawY; }
+
+  const elapsed = Date.now()-dwellStart;
+  const pct     = Math.min(1, elapsed/DWELL_MS);
+
+  // Mostra ring con progresso
+  ring.style.display = 'block';
+  ring.style.left    = (rawX*100)+'%';
+  ring.style.top     = (rawY*100)+'%';
+  arc.style.strokeDashoffset = 125.6*(1-pct);
+
+  if(pct >= 1 && !dwellCool){
+    dwellCool = true;
+    ring.style.display = 'none';
+    onTap();
+    setTimeout(()=>{ dwellCool=false; dwellStart=null; }, 800);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+//  CALIBRAZIONE
+// ══════════════════════════════════════════════════════════════
+const CORNERS = ['Top-Left ↖','Top-Right ↗','Bottom-Right ↘','Bottom-Left ↙'];
+const CEMO    = ['↖','↗','↘','↙'];
+let calibPts  = [], H = null, appState = 'start';
+let holdStart = null;
+const HOLD_MS = 1500;
+
 function startCalib(){
-  calibPts=[]; H=null; state='calibrating';
-  posHistory=[]; yHistory=[]; tapState='idle';
+  calibPts=[]; H=null; appState='calibrating';
+  baseline=null; posHist=[]; tapPhase='idle';
   for(let i=0;i<4;i++){
-    document.getElementById('cm-'+i).style.display='flex';
-    document.getElementById('cm-'+i).className='corner-marker cm-waiting';
+    const c=document.getElementById('cm-'+i);
+    c.style.display='flex'; c.className='cm cm-w';
     document.getElementById('sd'+i).className='sdot';
   }
   document.getElementById('step-dots').style.display='flex';
@@ -310,6 +452,8 @@ function startCalib(){
   document.getElementById('screen-guide').style.display='block';
   document.getElementById('active-hud').style.display='none';
   document.getElementById('cdot').style.display='none';
+  document.getElementById('baseline-bar').style.display='none';
+  document.getElementById('dwell-ring').style.display='none';
   pill('state','yellow','⬤ Calibrazione');
   updateCalibUI();
 }
@@ -317,49 +461,64 @@ function updateCalibUI(){
   const s=calibPts.length;
   if(s>=4){ finishCalib(); return; }
   for(let i=0;i<4;i++){
-    const cm=document.getElementById('cm-'+i),sd=document.getElementById('sd'+i);
-    if(i<s)       { cm.className='corner-marker cm-done';   sd.className='sdot done'; }
-    else if(i===s){ cm.className='corner-marker cm-active'; sd.className='sdot active'; }
-    else          { cm.className='corner-marker cm-waiting'; sd.className='sdot'; }
+    const cm=document.getElementById('cm-'+i), sd=document.getElementById('sd'+i);
+    if(i<s)       { cm.className='cm cm-d'; sd.className='sdot done'; }
+    else if(i===s){ cm.className='cm cm-a'; sd.className='sdot active'; }
+    else          { cm.className='cm cm-w'; sd.className='sdot'; }
   }
   const el=document.getElementById('instr');
   el.style.display='block';
-  el.innerHTML=`<div style="font-size:30px;margin-bottom:4px">${CEMO[s]}</div>
-    Angolo <b>${CORNERS[s]}</b> dello schermo<br>
+  el.innerHTML=`<div style="font-size:28px;margin-bottom:4px">${CEMO[s]}</div>
+    Angolo <b>${CORNERS[s]}</b><br>
     <span style="font-size:12px;color:#aaa;font-weight:normal">tieni il dito fermo 1.5 sec</span>`;
   document.getElementById('hold-fill').style.width='0%';
 }
 function finishCalib(){
   H=computeH(calibPts,[[0,0],[1,0],[1,1],[0,1]]);
-  state='active';
-  posHistory=[]; yHistory=[]; tapState='idle';
+  appState='active';
   document.getElementById('step-dots').style.display='none';
   document.getElementById('instr').style.display='none';
   document.getElementById('hold-wrap').style.display='none';
   document.getElementById('screen-guide').style.display='none';
   document.getElementById('active-hud').style.display='flex';
   document.getElementById('cdot').style.display='block';
+  document.getElementById('baseline-bar').style.display='block';
   document.getElementById('btn-recalib').style.display='flex';
-  document.getElementById('sens-row').style.display='flex';
-  for(let i=0;i<4;i++) document.getElementById('cm-'+i).className='corner-marker cm-done';
+  document.getElementById('mode-row').style.display='flex';
+  for(let i=0;i<4;i++) document.getElementById('cm-'+i).className='cm cm-d';
   pill('state','green','⬤ Attivo 👆');
-  setTimeout(()=>{ for(let i=0;i<4;i++) document.getElementById('cm-'+i).style.display='none'; },2500);
+  setTimeout(()=>{ for(let i=0;i<4;i++) document.getElementById('cm-'+i).style.display='none'; },2000);
 }
 
-// ── MEDIAPIPE ─────────────────────────────────────────────
-const video=document.getElementById('video');
-const canvas=document.getElementById('overlay-canvas');
-const ctx=canvas.getContext('2d');
-const cdot=document.getElementById('cdot');
-const flash=document.getElementById('click-flash');
+// ══════════════════════════════════════════════════════════════
+//  CLICK + FEEDBACK
+// ══════════════════════════════════════════════════════════════
+const cdot  = document.getElementById('cdot');
+const flash = document.getElementById('flash');
 
-// Modello 1 = più preciso
-const hands=new Hands({ locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
+function triggerClick(mx,my){
+  const cx=Math.max(0,Math.min(1,mx)), cy=Math.max(0,Math.min(1,my));
+  socket.emit('move',{x:cx,y:cy});
+  socket.emit('click',{button:'left',x:cx,y:cy});
+  cdot.className='clicked';
+  flash.classList.add('show');
+  document.getElementById('hg').textContent='✅ CLICK!';
+  setTimeout(()=>{ cdot.className='ready'; flash.classList.remove('show'); },200);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  MEDIAPIPE
+// ══════════════════════════════════════════════════════════════
+const video  = document.getElementById('video');
+const canvas = document.getElementById('overlay-canvas');
+const ctx    = canvas.getContext('2d');
+
+const hands = new Hands({ locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
 hands.setOptions({
   maxNumHands:1,
-  modelComplexity:1,           // ← più preciso
-  minDetectionConfidence:0.8,
-  minTrackingConfidence:0.75
+  modelComplexity:1,
+  minDetectionConfidence:0.82,
+  minTrackingConfidence:0.78
 });
 hands.onResults(onResults);
 
@@ -371,57 +530,45 @@ function frameLoop(){
   hands.send({image:video}).then(()=>{ processing=false; }).catch(()=>{ processing=false; });
 }
 
-function triggerClick(mx,my){
-  const cx=Math.max(0,Math.min(1,mx));
-  const cy=Math.max(0,Math.min(1,my));
-  socket.emit('move',{x:cx,y:cy});
-  socket.emit('click',{button:'left',x:cx,y:cy});
-  // Feedback visivo
-  cdot.classList.add('touching');
-  flash.classList.add('show');
-  document.getElementById('hg').textContent='👆 CLICK!';
-  setTimeout(()=>{ cdot.classList.remove('touching'); flash.classList.remove('show'); },200);
-}
-
 function onResults(results){
-  canvas.width=video.videoWidth||canvas.offsetWidth;
-  canvas.height=video.videoHeight||canvas.offsetHeight;
+  canvas.width  = video.videoWidth  || canvas.offsetWidth;
+  canvas.height = video.videoHeight || canvas.offsetHeight;
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
   if(!results.multiHandLandmarks?.length){
     holdStart=null;
-    yHistory=[]; tapState='idle';
-    document.getElementById('hold-fill').style.width='0%';
-    if(state==='active'){
+    if(appState==='calibrating') document.getElementById('hold-fill').style.width='0%';
+    if(appState==='active'){
       document.getElementById('hg').textContent='👋 mano non vista';
-      cdot.classList.remove('ready','touching');
+      cdot.className='';
+      baseline=null; posHist=[];
+      tapPhase='idle'; dwellStart=null;
+      document.getElementById('dwell-ring').style.display='none';
     }
     return;
   }
 
-  const lm=results.multiHandLandmarks[0];
+  const lm = results.multiHandLandmarks[0];
 
-  // Disegna con colori migliori
-  drawConnectors(ctx,lm,HAND_CONNECTIONS,{color:'rgba(0,212,255,0.6)',lineWidth:3});
-  drawLandmarks(ctx,lm,{color:'#ffffff',lineWidth:1,radius:4});
-  // Evidenzia punta indice
+  // Disegna scheletro mano
+  drawConnectors(ctx,lm,HAND_CONNECTIONS,{color:'rgba(0,200,255,0.55)',lineWidth:3});
+  drawLandmarks(ctx,lm,{color:'rgba(255,255,255,0.8)',lineWidth:1,radius:4});
+  // Evidenzia tip indice con cerchio giallo
+  const tw=canvas.width, th=canvas.height;
   ctx.beginPath();
-  ctx.arc(lm[8].x*canvas.width,lm[8].y*canvas.height,8,0,Math.PI*2);
-  ctx.fillStyle='rgba(255,200,0,0.9)'; ctx.fill();
+  ctx.arc(lm[8].x*tw, lm[8].y*th, 9, 0, Math.PI*2);
+  ctx.fillStyle='rgba(255,210,0,0.9)'; ctx.fill();
+  ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.stroke();
 
-  const tip=lm[8];
-  const rawX=tip.x, rawY=tip.y;
+  const rawX=lm[8].x, rawY=lm[8].y;
 
-  // ── CALIBRAZIONE ──
-  if(state==='calibrating'){
-    ctx.beginPath();
-    ctx.arc(rawX*canvas.width,rawY*canvas.height,14,0,Math.PI*2);
-    ctx.fillStyle='rgba(255,204,0,0.85)'; ctx.fill();
+  // ── CALIBRAZIONE ──────────────────────────────────────────
+  if(appState==='calibrating'){
     if(!holdStart){
       holdStart={t:Date.now(),x:rawX,y:rawY};
     } else {
       const moved=Math.hypot(rawX-holdStart.x,rawY-holdStart.y);
-      if(moved>0.03){
+      if(moved>0.028){
         holdStart={t:Date.now(),x:rawX,y:rawY};
         document.getElementById('hold-fill').style.width='0%';
       } else {
@@ -432,80 +579,127 @@ function onResults(results){
     }
     return;
   }
+  if(appState!=='active'||!H) return;
 
-  if(state!=='active'||!H) return;
-
-  // Posizione smoothed
-  const [sx,sy]=smoothPos(rawX,rawY);
-  const [mx,my]=applyH(H,sx,sy);
-  const inScreen=mx>=-0.05&&mx<=1.05&&my>=-0.05&&my<=1.05;
+  // ── ACTIVE ────────────────────────────────────────────────
+  const [sx,sy] = smoothPos(rawX,rawY);
+  const [mx,my] = applyH(H,sx,sy);
+  const inScreen = mx>=-0.05&&mx<=1.05&&my>=-0.05&&my<=1.05;
+  const isPointing = isFingerPointing(lm);
 
   document.getElementById('hx').textContent=mx.toFixed(2);
   document.getElementById('hy').textContent=my.toFixed(2);
 
-  // Cursore visivo
-  cdot.style.left=(rawX*100)+'%';
-  cdot.style.top=(rawY*100)+'%';
-
-  // Stato cursore
-  if(!cdot.classList.contains('touching')){
-    if(inScreen){
-      cdot.classList.add('ready');
-      document.getElementById('hg').textContent='☝️ pronto';
-    } else {
-      cdot.classList.remove('ready');
-      document.getElementById('hg').textContent='↗ fuori area';
-    }
+  // Cursore
+  cdot.style.left = (rawX*100)+'%';
+  cdot.style.top  = (rawY*100)+'%';
+  if(!cdot.classList.contains('clicked')){
+    if(!inScreen)       cdot.className='';
+    else if(tapPhase==='dipping') cdot.className='dipping';
+    else                cdot.className='ready';
   }
 
-  // Invia movimento continuo
+  // Invia hover
   if(inScreen){
     socket.emit('move',{x:Math.max(0,Math.min(1,mx)),y:Math.max(0,Math.min(1,my))});
   }
 
-  // Rilevamento tap basato su velocità
-  checkTap(rawY, ()=>{
-    if(inScreen) triggerClick(mx,my);
-  });
+  if(!inScreen){
+    document.getElementById('hg').textContent='↗ fuori area';
+    return;
+  }
+
+  if(!isPointing){
+    document.getElementById('hg').textContent='🤚 estendi il dito';
+    tapPhase='idle'; dwellStart=null;
+    return;
+  }
+
+  document.getElementById('hg').textContent= dwellMode ? '⏱ tieni fermo' : '☝️ pronto';
+
+  // ── RILEVAMENTO CLICK ──────────────────────────────────────
+  if(dwellMode){
+    processDwell(rawX, rawY, inScreen, ()=>triggerClick(mx,my));
+  } else {
+    processTap(rawY, inScreen, ()=>triggerClick(mx,my));
+  }
 }
 
-// ── ZOOM ──────────────────────────────────────────────────
-let videoTrack=null;
-const zoomSlider=document.getElementById('zoom-slider');
-const zoomValEl=document.getElementById('zoom-val');
-let zoomCssMode=false;
+// ══════════════════════════════════════════════════════════════
+//  ZOOM — slider 0.4x → 5x
+//  < 1.0  → CSS inverse scale (dezoom visivo, FOV massimo)
+//  ≥ 1.0  → zoom camera API (se supportato) o CSS scale
+// ══════════════════════════════════════════════════════════════
+let videoTrack=null, apiZoomSupported=false;
 
-zoomSlider.addEventListener('input', async()=>{
-  const z=parseFloat(zoomSlider.value);
-  zoomValEl.textContent=z.toFixed(1)+'×';
-  if(zoomCssMode){
-    const scale=1/z;
-    video.style.transform=`scale(${scale})`;
-    video.style.transformOrigin='center center';
-  } else if(videoTrack){
-    const caps=videoTrack.getCapabilities();
-    if(caps.zoom){
-      try{ await videoTrack.applyConstraints({advanced:[{zoom:z}]}); } catch(e){}
-    }
-  }
+document.getElementById('zoom-sl').addEventListener('input', async function(){
+  const z = parseFloat(this.value);
+  document.getElementById('zoom-v').textContent = z.toFixed(2)+'×';
+  applyZoom(z);
 });
 
-// ── AVVIO CAMERA ──────────────────────────────────────────
+async function applyZoom(z){
+  if(z < 1.0){
+    // Dezoom: riduco il video visivamente → si vede di più
+    video.style.transform = `scale(${z})`;
+    video.style.transformOrigin = 'center center';
+    // Reset eventuale zoom API
+    if(apiZoomSupported && videoTrack){
+      try{ await videoTrack.applyConstraints({advanced:[{zoom:1}]}); }catch(e){}
+    }
+  } else {
+    // Zoom normale
+    video.style.transform = 'scale(1)';
+    if(apiZoomSupported && videoTrack){
+      try{ await videoTrack.applyConstraints({advanced:[{zoom:z}]}); }catch(e){}
+    } else {
+      video.style.transform = `scale(${z})`;
+    }
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+//  AVVIO CAMERA — prova ultrawide poi fallback
+// ══════════════════════════════════════════════════════════════
 async function startCamera(){
   const btn=document.getElementById('btn-start');
   btn.disabled=true; btn.textContent='⏳ Avvio...';
 
-  const configs=[
-    {video:{facingMode:{exact:'environment'}}},
-    {video:{facingMode:'environment'}},
-    {video:{facingMode:'user'}},
-    {video:true}
-  ];
-
   let stream=null;
-  for(const cfg of configs){
-    try{ stream=await navigator.mediaDevices.getUserMedia(cfg); break; }
-    catch(e){ console.warn('Fallito:',e.message); }
+
+  // Prova a enumerare tutte le camere e trovare l'ultrawide (posteriore)
+  try{
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const cams = devices.filter(d=>d.kind==='videoinput');
+    console.log('Camere trovate:', cams.map(c=>c.label));
+
+    // Cerca ultrawide per label
+    const ultrawide = cams.find(c=>
+      /ultra|wide|0.6|0\.6|gran/i.test(c.label)
+    );
+
+    if(ultrawide){
+      try{
+        stream = await navigator.mediaDevices.getUserMedia({
+          video:{ deviceId:{ exact: ultrawide.deviceId } }
+        });
+        console.log('Ultrawide trovata:', ultrawide.label);
+      }catch(e){ stream=null; }
+    }
+  }catch(e){ console.warn('Enumerate fallita:', e); }
+
+  // Fallback progressivo
+  if(!stream){
+    const configs=[
+      {video:{facingMode:{exact:'environment'}}},
+      {video:{facingMode:'environment'}},
+      {video:{facingMode:'user'}},
+      {video:true}
+    ];
+    for(const cfg of configs){
+      try{ stream=await navigator.mediaDevices.getUserMedia(cfg); break; }
+      catch(e){ console.warn('Fallito:', e.message); }
+    }
   }
 
   if(!stream){
@@ -514,26 +708,26 @@ async function startCamera(){
     return;
   }
 
-  videoTrack=stream.getVideoTracks()[0];
-  const caps=videoTrack.getCapabilities();
+  videoTrack = stream.getVideoTracks()[0];
+  console.log('Camera attiva:', videoTrack.label, videoTrack.getSettings());
 
+  // Controlla supporto zoom API
+  const caps = videoTrack.getCapabilities ? videoTrack.getCapabilities() : {};
   if(caps.zoom){
+    apiZoomSupported=true;
     const minZ=caps.zoom.min||1, maxZ=caps.zoom.max||5;
-    try{ await videoTrack.applyConstraints({advanced:[{zoom:minZ}]}); } catch(e){}
-    zoomSlider.min=minZ; zoomSlider.max=maxZ;
-    zoomSlider.value=minZ; zoomSlider.step=(maxZ-minZ)/50;
-    zoomValEl.textContent=minZ.toFixed(1)+'×';
-  } else {
-    zoomCssMode=true;
-    zoomSlider.min=1; zoomSlider.max=3; zoomSlider.step=0.05; zoomSlider.value=1;
-    zoomValEl.textContent='1.0×';
+    const sl=document.getElementById('zoom-sl');
+    sl.max=maxZ;
+    try{ await videoTrack.applyConstraints({advanced:[{zoom:minZ}]}); }catch(e){}
+    console.log('Zoom API supportata:', minZ, '→', maxZ);
   }
-  document.getElementById('zoom-row').style.display='flex';
 
   video.srcObject=stream;
   await new Promise(res=>{ video.onloadedmetadata=res; });
   await video.play();
+
   btn.textContent='✅ Camera attiva';
+  document.getElementById('controls-row').style.display='flex';
   frameLoop();
   startCalib();
 }
