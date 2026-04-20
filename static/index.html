@@ -3,156 +3,82 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>👆 Touch Screen</title>
+  <title>☝️ Touch Screen</title>
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      background:#0a0a14; color:#fff;
-      font-family:'Segoe UI',sans-serif;
-      height:100dvh; display:flex; flex-direction:column; overflow:hidden;
-    }
-    #top-bar {
-      padding:7px 12px; background:#12121f;
-      display:flex; gap:6px; align-items:center;
-      border-bottom:1px solid #1e1e30; flex-shrink:0;
-    }
-    .pill {
-      padding:4px 9px; border-radius:20px;
-      font-size:11px; font-weight:600; flex:1; text-align:center;
-    }
+    body { background:#0a0a14; color:#fff; font-family:'Segoe UI',sans-serif;
+      height:100dvh; display:flex; flex-direction:column; overflow:hidden; }
+    #top-bar { padding:7px 12px; background:#12121f; display:flex; gap:6px;
+      align-items:center; border-bottom:1px solid #1e1e30; flex-shrink:0; }
+    .pill { padding:4px 9px; border-radius:20px; font-size:11px; font-weight:600; flex:1; text-align:center; }
     .pill.green  { background:#003820; color:#00ff88; }
     .pill.red    { background:#380008; color:#ff4466; }
     .pill.yellow { background:#382800; color:#ffcc00; }
-    #btn-row {
-      padding:7px 12px; background:#12121f;
-      display:flex; gap:7px; flex-shrink:0; border-bottom:1px solid #1e1e30;
-    }
-    .btn {
-      flex:1; padding:10px; border:none; border-radius:9px;
-      font-size:12px; font-weight:700; cursor:pointer;
-    }
+    #btn-row { padding:7px 12px; background:#12121f; display:flex; gap:7px;
+      flex-shrink:0; border-bottom:1px solid #1e1e30; }
+    .btn { flex:1; padding:11px; border:none; border-radius:9px; font-size:13px; font-weight:700; cursor:pointer; }
     .btn-start { background:linear-gradient(135deg,#6c63ff,#00d4ff); color:#fff; }
     .btn-start:disabled { background:#2a2a40; color:#555; }
-    .btn-sec   { background:#1e1e30; color:#aaa; display:none; }
-
-    /* Controls */
-    #ctrl-row {
-      display:none; flex-direction:column;
-      background:#0d0d1a; border-bottom:1px solid #1a1a2e; flex-shrink:0;
-    }
-    .cl {
-      display:flex; align-items:center; gap:10px;
-      padding:5px 12px; border-bottom:1px solid #0f0f18;
-    }
+    .btn-sec { background:#1e1e30; color:#aaa; display:none; }
+    #ctrl-row { display:none; flex-direction:column; background:#0d0d1a;
+      border-bottom:1px solid #1a1a2e; flex-shrink:0; }
+    .cl { display:flex; align-items:center; gap:10px; padding:5px 12px; border-bottom:1px solid #0a0a12; }
     .cl:last-child { border-bottom:none; }
-    .cl label { font-size:11px; color:#555; width:90px; flex-shrink:0; }
+    .cl label { font-size:11px; color:#555; width:110px; flex-shrink:0; }
     .cl input  { flex:1; accent-color:#6c63ff; }
     .cl span   { font-size:11px; color:#00d4ff; width:44px; text-align:right; }
-
-    /* Mode */
-    #mode-row {
-      display:none; flex-shrink:0; background:#0d0d1a;
-      border-bottom:1px solid #1a1a2e; padding:5px 12px; gap:6px;
-    }
-    .mb {
-      flex:1; padding:7px 4px; border:1.5px solid #2a2a3a; border-radius:8px;
-      background:transparent; color:#555; font-size:11px; font-weight:700; cursor:pointer;
-    }
-    .mb.on { border-color:#6c63ff; color:#fff; background:rgba(108,99,255,.18); }
-
-    /* Legend */
-    #legend {
-      display:none; flex-shrink:0; background:#08080f;
-      border-bottom:1px solid #1a1a2e; padding:5px 12px;
-      font-size:10px; color:#555; line-height:1.8; text-align:center;
-    }
-    #legend b { color:#aaa; }
-
-    /* Camera */
+    #howto { display:none; flex-shrink:0; background:#08080f;
+      border-bottom:1px solid #1a1a2e; padding:5px 14px;
+      font-size:11px; color:#555; text-align:center; line-height:1.9; }
+    #howto b { color:#aaa; }
     #cam-wrap { position:relative; flex:1; overflow:hidden; background:#000; min-height:0; }
     #video { width:100%; height:100%; object-fit:cover; display:block; transform-origin:center; }
-    #overlay-canvas { position:absolute; inset:0; width:100%; height:100%; }
-
-    #sg {
-      position:absolute; inset:8%; border:2px dashed rgba(255,255,255,.2);
-      border-radius:8px; pointer-events:none; z-index:2; display:none;
-    }
-    #sg::after { content:'inquadra tutto lo schermo PC';
-      position:absolute; bottom:-20px; left:0; right:0;
-      text-align:center; font-size:10px; color:rgba(255,255,255,.3); }
-
-    .cm {
-      position:absolute; width:50px; height:50px; border-radius:50%;
+    #canvas { position:absolute; inset:0; width:100%; height:100%; }
+    #sg { position:absolute; inset:8%; border:2px dashed rgba(255,255,255,.2);
+      border-radius:8px; pointer-events:none; z-index:2; display:none; }
+    #sg::after { content:'inquadra tutto lo schermo PC'; position:absolute; bottom:-20px;
+      left:0; right:0; text-align:center; font-size:10px; color:rgba(255,255,255,.3); }
+    .cm { position:absolute; width:50px; height:50px; border-radius:50%;
       display:flex; align-items:center; justify-content:center;
-      font-size:12px; font-weight:bold; border:3px solid; transition:all .25s;
-    }
+      font-size:12px; font-weight:bold; border:3px solid; transition:all .25s; }
     .cm-w { border-color:#333; background:rgba(40,40,40,.4); color:#444; }
     .cm-a { border-color:#ffcc00; background:rgba(255,204,0,.2); color:#ffcc00; animation:pulse .7s infinite; }
     .cm-d { border-color:#00ff88; background:rgba(0,255,136,.15); color:#00ff88; }
     @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.18)} }
-
-    #step-dots {
-      position:absolute; top:9px; left:0; right:0;
-      display:flex; justify-content:center; gap:9px; z-index:10;
-    }
+    #step-dots { position:absolute; top:9px; left:0; right:0;
+      display:flex; justify-content:center; gap:9px; z-index:10; }
     .sd { width:11px; height:11px; border-radius:50%; background:#222; transition:.3s; }
     .sd.done   { background:#00ff88; }
     .sd.active { background:#ffcc00; animation:pulse .7s infinite; }
-
-    #instr {
-      position:absolute; bottom:19%; left:6%; right:6%;
-      background:rgba(0,0,0,.92); border-radius:14px;
-      padding:13px 16px; text-align:center; font-size:14px; line-height:1.7; z-index:10;
-    }
-    #hold-wrap {
-      position:absolute; bottom:12%; left:10%; right:10%;
-      height:7px; background:#1a1a1a; border-radius:4px; overflow:hidden; z-index:10;
-    }
+    #instr { position:absolute; bottom:20%; left:6%; right:6%; background:rgba(0,0,0,.92);
+      border-radius:14px; padding:14px 16px; text-align:center; font-size:14px; line-height:1.7; z-index:10; }
+    #hold-wrap { position:absolute; bottom:13%; left:10%; right:10%;
+      height:7px; background:#1a1a1a; border-radius:4px; overflow:hidden; z-index:10; }
     #hold-fill { height:100%; width:0%; background:linear-gradient(90deg,#6c63ff,#00d4ff); border-radius:4px; }
-
-    /* HUD */
-    #hud {
-      position:absolute; bottom:5px; left:5px; right:5px;
-      display:flex; gap:4px; z-index:5; flex-wrap:wrap; justify-content:center;
-    }
-    .hb { background:rgba(0,0,0,.85); border-radius:7px; padding:3px 8px; font-size:10px; border:1px solid #1e1e30; }
+    #hud { position:absolute; top:8px; left:8px; right:8px; display:flex; gap:5px; z-index:5; flex-wrap:wrap; }
+    .hb { background:rgba(0,0,0,.85); border-radius:7px; padding:4px 9px; font-size:11px; border:1px solid #1e1e30; }
     .hb b { color:#00d4ff; }
-    .hb.act { border-color:#00ff88; color:#00ff88; font-weight:700; }
-    .hb.warn { border-color:#ffcc00; color:#ffcc00; }
-    .hb.drag { border-color:#ff9900; color:#ff9900; font-weight:700; }
-    .hb.dbl  { border-color:#00aaff; color:#00aaff; font-weight:700; }
-
-    /* Hand cursors */
-    .hcursor {
-      position:absolute; border-radius:50%; border:2.5px solid rgba(255,255,255,.8);
-      transform:translate(-50%,-50%); pointer-events:none; z-index:6;
-      transition:background .07s, width .07s, height .07s;
-      width:20px; height:20px;
-    }
-    .hcursor.h0 { background:rgba(108,99,255,.85); }
-    .hcursor.h1 { background:rgba(255,80,80,.85); }
-    .hcursor.curled  { background:rgba(255,200,0,.95) !important; width:28px !important; height:28px !important; box-shadow:0 0 12px rgba(255,200,0,.6); }
-    .hcursor.clicked { background:rgba(0,255,136,.95) !important; width:34px !important; height:34px !important; }
-    .hcursor.dragging { background:rgba(255,153,0,.95) !important; width:26px !important; height:26px !important; }
-
-    /* Dwell ring */
-    .dring {
-      position:absolute; pointer-events:none; z-index:7;
-      width:52px; height:52px; transform:translate(-50%,-50%); display:none;
-    }
-
-    /* Curl meter bar per mano */
-    .cmeter {
-      position:absolute; left:4px; right:4px; height:3px; z-index:8;
-      border-radius:2px; overflow:hidden; background:rgba(255,255,255,.08);
-    }
-    .cmeter-fill { height:100%; width:0%; border-radius:2px; transition:width .04s; }
-
-    /* Flash */
+    .hb.green  { border-color:#00ff88; color:#00ff88; font-weight:700; }
+    .hb.orange { border-color:#ff9900; color:#ff9900; font-weight:700; }
+    .hb.blue   { border-color:#00aaff; color:#00aaff; font-weight:700; }
+    .hb.yellow { border-color:#ffcc00; color:#ffcc00; }
+    /* Barra velocità */
+    #vbar-wrap { position:absolute; bottom:0; left:0; right:0;
+      height:5px; background:rgba(255,255,255,.04); z-index:8; display:none; }
+    #vbar { height:100%; width:0%; border-radius:2px; transition:width .04s, background .08s; }
+    /* Cursore */
+    #cur { position:absolute; border-radius:50%; pointer-events:none; z-index:6;
+      transform:translate(-50%,-50%); width:22px; height:22px; display:none;
+      background:rgba(108,99,255,.85); border:2.5px solid rgba(255,255,255,.8);
+      transition:background .07s, width .08s, height .08s, box-shadow .08s; }
+    #cur.moving   { background:rgba(108,99,255,.85); }
+    #cur.slow     { background:rgba(255,200,0,.9); box-shadow:0 0 10px rgba(255,200,0,.5); }
+    #cur.clicked  { background:rgba(0,255,136,.95) !important; width:32px !important; height:32px !important; box-shadow:0 0 18px rgba(0,255,136,.7); }
+    #cur.dragging { background:rgba(255,153,0,.95); width:26px; height:26px; box-shadow:0 0 12px rgba(255,153,0,.5); }
     #flash { position:absolute; inset:0; pointer-events:none; z-index:9; opacity:0; transition:opacity .06s; }
-    #flash.click { opacity:1; background:rgba(0,255,136,.12); }
-    #flash.dbl   { opacity:1; background:rgba(0,170,255,.16); }
-    #flash.drag  { opacity:1; background:rgba(255,153,0,.10); }
+    #flash.c  { opacity:1; background:rgba(0,255,136,.13); }
+    #flash.d  { opacity:1; background:rgba(0,170,255,.18); }
+    #flash.dr { opacity:1; background:rgba(255,153,0,.10); }
   </style>
 </head>
 <body>
@@ -172,43 +98,44 @@
     <span id="zv">1.0×</span>
   </div>
   <div class="cl">
-    <label>👆 Sensibilità piega</label>
-    <input type="range" id="ssl" min="1" max="9" step="1" value="5">
+    <label>⚡ Sensibilità stop</label>
+    <input type="range" id="vsl" min="1" max="9" step="1" value="5">
+    <span id="vv">—</span>
+  </div>
+  <div class="cl">
+    <label>🔄 Smoothing</label>
+    <input type="range" id="ssl" min="2" max="8" step="1" value="4">
     <span id="sv">—</span>
   </div>
 </div>
-<div id="mode-row">
-  <button class="mb on"  id="m-curl"  onclick="setMode('curl')">🤙 Piega dito</button>
-  <button class="mb"     id="m-dwell" onclick="setMode('dwell')">⏱ Dwell 1s</button>
-</div>
-<div id="legend">
-  <b>Piega dito:</b> dito dritto = cursore · piega indice = click · piega 500ms+muovi = drag · doppia piega rapida = doppio click
+<div id="howto">
+  <b>☝️ Muovi</b> il dito = cursore &nbsp;·&nbsp;
+  <b>Tocca</b> lo schermo = click &nbsp;·&nbsp;
+  <b>Due tocchi</b> rapidi = doppio click &nbsp;·&nbsp;
+  <b>Tieni fermo 0.5s</b> = drag
 </div>
 
 <div id="cam-wrap">
   <video id="video" playsinline autoplay muted></video>
-  <canvas id="overlay-canvas"></canvas>
+  <canvas id="canvas"></canvas>
   <div id="sg"></div>
-
   <div class="cm cm-w" id="cm-0" style="top:8px;left:8px">TL</div>
   <div class="cm cm-w" id="cm-1" style="top:8px;right:8px">TR</div>
   <div class="cm cm-w" id="cm-2" style="bottom:8px;right:8px">BR</div>
   <div class="cm cm-w" id="cm-3" style="bottom:8px;left:8px">BL</div>
-
   <div id="step-dots" style="display:none">
     <div class="sd" id="sd0"></div><div class="sd" id="sd1"></div>
     <div class="sd" id="sd2"></div><div class="sd" id="sd3"></div>
   </div>
   <div id="instr"     style="display:none"></div>
   <div id="hold-wrap" style="display:none"><div id="hold-fill"></div></div>
-
   <div id="hud" style="display:none">
-    <div class="hb" id="hg0">🤚—</div>
-    <div class="hb" id="hg1">🤚—</div>
-    <div class="hb" id="hact">—</div>
+    <div class="hb" id="hstate">—</div>
+    <div class="hb yellow">vel: <b id="hvel">0.000</b></div>
     <div class="hb">X:<b id="hx">—</b> Y:<b id="hy">—</b></div>
   </div>
-
+  <div id="vbar-wrap"><div id="vbar"></div></div>
+  <div id="cur"></div>
   <div id="flash"></div>
 </div>
 
@@ -218,22 +145,17 @@
 <script>
 'use strict';
 
-// ══════════════════════════════════════════════════════
-//  SOCKET
-// ══════════════════════════════════════════════════════
+// ── SOCKET ──────────────────────────────────────────────────
 const socket = io({ transports:['websocket'] });
-socket.on('connect',    ()=>{ pill('server','green','⬤ Server OK'); socket.emit('register',{role:'phone'}); });
+socket.on('connect',    ()=>{ pill('server','green','⬤ OK'); socket.emit('register',{role:'phone'}); });
 socket.on('disconnect', ()=>pill('server','red','⬤ Disconnesso'));
 function pill(id,cls,txt){ const e=document.getElementById('pill-'+id); e.className='pill '+cls; e.textContent=txt; }
 
-// ══════════════════════════════════════════════════════
-//  HOMOGRAPHY
-// ══════════════════════════════════════════════════════
+// ── HOMOGRAPHY ──────────────────────────────────────────────
 function gaussElim(A,b){
   const n=b.length,M=A.map((r,i)=>[...r,b[i]]);
   for(let c=0;c<n;c++){
-    let mx=c;
-    for(let r=c+1;r<n;r++) if(Math.abs(M[r][c])>Math.abs(M[mx][c])) mx=r;
+    let mx=c; for(let r=c+1;r<n;r++) if(Math.abs(M[r][c])>Math.abs(M[mx][c])) mx=r;
     [M[c],M[mx]]=[M[mx],M[c]];
     for(let r=c+1;r<n;r++){ const f=M[r][c]/M[c][c]; for(let j=c;j<=n;j++) M[r][j]-=f*M[c][j]; }
   }
@@ -248,303 +170,144 @@ function computeH(src,dst){
     A.push([sx,sy,1,0,0,0,-dx*sx,-dx*sy]); b.push(dx);
     A.push([0,0,0,sx,sy,1,-dy*sx,-dy*sy]); b.push(dy);
   }
-  const h=gaussElim(A,b);
-  return [[h[0],h[1],h[2]],[h[3],h[4],h[5]],[h[6],h[7],1]];
+  const h=gaussElim(A,b); return [[h[0],h[1],h[2]],[h[3],h[4],h[5]],[h[6],h[7],1]];
 }
 function applyH(H,x,y){
   const w=H[2][0]*x+H[2][1]*y+H[2][2];
   return [(H[0][0]*x+H[0][1]*y+H[0][2])/w,(H[1][0]*x+H[1][1]*y+H[1][2])/w];
 }
-function clamp01(v){ return Math.max(0,Math.min(1,v)); }
+const cl01=v=>Math.max(0,Math.min(1,v));
 
-// ══════════════════════════════════════════════════════
-//  SMOOTHING
-// ══════════════════════════════════════════════════════
-function makeSmoother(n){
-  let h=[];
-  return (x,y)=>{
-    h.push([x,y]); if(h.length>n) h.shift();
-    let wx=0,wy=0,wt=0;
-    for(let i=0;i<h.length;i++){ const w=i+1; wx+=h[i][0]*w; wy+=h[i][1]*w; wt+=w; }
-    return [wx/wt, wy/wt];
-  };
+// ── SMOOTHING ───────────────────────────────────────────────
+let SMOOTH_N=4; let posHist=[];
+function smoothPos(x,y){
+  posHist.push([x,y]); if(posHist.length>SMOOTH_N) posHist.shift();
+  let wx=0,wy=0,wt=0;
+  posHist.forEach(([px,py],i)=>{ const w=i+1; wx+=px*w; wy+=py*w; wt+=w; });
+  return [wx/wt,wy/wt];
 }
-
-// ══════════════════════════════════════════════════════
-//  CURL DETECTION
-//
-//  Il gesto è: piega l'indice (come per grattare)
-//  MediaPipe landmarks indice: MCP=5, PIP=6, DIP=7, TIP=8
-//
-//  Metrica: distanza TIP→MCP normalizzata per lunghezza dito
-//  - Dito dritto:  dist(TIP,MCP) ≈ 0.35+ (grande)
-//  - Dito piegato: dist(TIP,MCP) ≈ 0.10-0.20 (piccola)
-//
-//  Vantaggio: funziona a qualsiasi angolazione del telefono,
-//  non dipende da movimenti temporali, rilevamento per frame.
-// ══════════════════════════════════════════════════════
-function dist(a,b){ return Math.hypot(a.x-b.x, a.y-b.y); }
-function dist3(a,b){ return Math.hypot(a.x-b.x, a.y-b.y, (a.z||0)-(b.z||0)); }
-
-// Calcola "curl score" 0 (dritto) → 1 (piegato completamente)
-function getCurlScore(lm){
-  // Lunghezza del dito (MCP→TIP lungo l'osso, invariante all'angolazione)
-  const fingerLen = dist3(lm[5],lm[6]) + dist3(lm[6],lm[7]) + dist3(lm[7],lm[8]);
-  // Distanza diretta TIP→MCP
-  const tipToMcp = dist3(lm[8], lm[5]);
-  // Curl = 1 - (tipToMcp / fingerLen): 0=dritto, ~0.5-0.7=piegato
-  const raw = 1 - (tipToMcp / (fingerLen + 0.001));
-  return Math.max(0, Math.min(1, raw));
-}
-
-// Soglia piega: regolabile da slider
-// CURL_THRESH: score sopra il quale si considera "piegato"
-let CURL_THRESH = 0.38;
-const SL=['','Massima','Alta+','Alta','Media+','Media','Bassa+','Bassa','Minima+','Minima'];
-document.getElementById('ssl').addEventListener('input', function(){
-  const v=parseInt(this.value);
-  document.getElementById('sv').textContent=SL[v]||v;
-  // v=1 (max sensibilità): thresh bassa → basta poco per click
-  // v=9 (min sensibilità): thresh alta → serve piega marcata
-  CURL_THRESH = 0.25 + (v-1)*0.035;
+document.getElementById('ssl').addEventListener('input',function(){
+  SMOOTH_N=parseInt(this.value); posHist=[];
+  document.getElementById('sv').textContent=this.value;
 });
 document.getElementById('ssl').dispatchEvent(new Event('input'));
 
-// ══════════════════════════════════════════════════════
-//  MODALITÀ
-// ══════════════════════════════════════════════════════
-let mode = 'curl'; // 'curl' | 'dwell'
-function setMode(m){
-  mode = m;
-  document.getElementById('m-curl').classList.toggle('on',  m==='curl');
-  document.getElementById('m-dwell').classList.toggle('on', m==='dwell');
-  document.getElementById('legend').style.display = m==='curl' ? 'block' : 'none';
-  hands2.forEach(h=>{ if(h) resetHS(h); });
+// ── STOP DETECTION ──────────────────────────────────────────
+// Quando il dito tocca lo schermo si ferma di botto.
+// Tracciamo velocità istantanea: era alta → diventa quasi zero → CLICK.
+
+let V_HIGH=0.008, V_STOP=0.003;
+const VLABELS=['','Max','Alta+','Alta','Med+','Media','Bassa+','Bassa','Min+','Min'];
+document.getElementById('vsl').addEventListener('input',function(){
+  const v=parseInt(this.value);
+  document.getElementById('vv').textContent=VLABELS[v];
+  V_HIGH=0.004+(v-1)*0.0015;
+  V_STOP=0.0015+(v-1)*0.0005;
+});
+document.getElementById('vsl').dispatchEvent(new Event('input'));
+
+const RAW_N=8; let rawBuf=[];
+function getVel(x,y){
+  rawBuf.push([x,y]); if(rawBuf.length>RAW_N) rawBuf.shift();
+  if(rawBuf.length<3) return 0;
+  // media delle distanze tra frame consecutivi
+  let tot=0;
+  for(let i=1;i<rawBuf.length;i++)
+    tot+=Math.hypot(rawBuf[i][0]-rawBuf[i-1][0],rawBuf[i][1]-rawBuf[i-1][1]);
+  return tot/(rawBuf.length-1);
 }
 
-// ══════════════════════════════════════════════════════
-//  PER-HAND STATE
-// ══════════════════════════════════════════════════════
-function makeHS(idx){
-  const cursor = document.createElement('div');
-  cursor.className = 'hcursor h'+idx;
-  cursor.style.display = 'none';
-  document.getElementById('cam-wrap').appendChild(cursor);
+let tapState='idle'; // idle|moving|stopped|drag|cool
+let stoppedAt=null;
+let movingFrames=0;
+let clickCool=false, lastClickT=0;
+const COOL_MS=400, DRAG_HOLD_MS=500, STOP_CONFIRM_MS=70;
 
-  // Dwell ring
-  const ring = document.createElementNS('http://www.w3.org/2000/svg','svg');
-  ring.classList.add('dring');
-  ring.setAttribute('viewBox','0 0 52 52');
-  ring.innerHTML=`<circle cx="26" cy="26" r="21" fill="none" stroke="rgba(255,200,0,.2)" stroke-width="4"/>
-    <circle class="darc" cx="26" cy="26" r="21" fill="none" stroke="#ffcc00" stroke-width="4"
-      stroke-linecap="round" stroke-dasharray="132" stroke-dashoffset="132"
-      transform="rotate(-90 26 26)"/>`;
-  document.getElementById('cam-wrap').appendChild(ring);
-
-  // Curl meter bar
-  const meter = document.createElement('div');
-  meter.className = 'cmeter';
-  meter.style.bottom = (idx * 6 + 2) + 'px';
-  meter.innerHTML = `<div class="cmeter-fill" style="background:${idx===0?'#6c63ff':'#ff5050'}"></div>`;
-  document.getElementById('cam-wrap').appendChild(meter);
-
-  return {
-    idx, cursor, ring, meter,
-    smooth: makeSmoother(5),
-    // curl state
-    curled: false,
-    curlStart: null,       // quando è iniziata la piega
-    curlDragStarted: false,
-    prevCurled: false,
-    clickCool: false,
-    lastClickTime: 0,
-    // dwell
-    dwellStart: null,
-    dwellLX: 0, dwellLY: 0,
-    dwellCool: false,
-    // drag
-    dragging: false,
-  };
+function resetAll(){
+  if(tapState==='drag') socket.emit('drag_end',{});
+  tapState='idle'; stoppedAt=null; movingFrames=0;
+  rawBuf=[]; posHist=[];
 }
 
-function resetHS(h){
-  h.curled=false; h.curlStart=null; h.curlDragStarted=false;
-  h.prevCurled=false; h.clickCool=false;
-  h.dwellStart=null; h.dragging=false;
-  if(h.dragging){ socket.emit('drag_end',{}); }
-  h.cursor.className='hcursor h'+h.idx;
-  h.ring.style.display='none';
-}
+function processTap(vel,mx,my,inScreen){
+  // Barra visiva
+  const vb=document.getElementById('vbar');
+  vb.style.width=Math.min(100,vel/V_HIGH*60)+'%';
+  vb.style.background=vel<V_STOP?'#00ff88':vel<V_HIGH?'#ffcc00':'#6c63ff';
+  document.getElementById('hvel').textContent=vel.toFixed(4);
 
-// ══════════════════════════════════════════════════════
-//  CURL MODE — logica per singola mano
-// ══════════════════════════════════════════════════════
-function processCurl(h, curlScore, mx, my, inScreen){
-  // Aggiorna meter visivo
-  const fill = h.meter.querySelector('.cmeter-fill');
-  fill.style.width = (curlScore*100)+'%';
+  if(!inScreen){ resetAll(); return; }
 
-  const isCurled = curlScore >= CURL_THRESH;
-  h.cursor.classList.toggle('curled', isCurled && !h.dragging);
-
-  const wasntCurled = !h.prevCurled;
-  const justCurled  = isCurled && wasntCurled;
-  const justStraight= !isCurled && h.prevCurled;
-  h.prevCurled = isCurled;
-
-  if(!inScreen){
-    if(h.dragging){ socket.emit('drag_end',{}); h.dragging=false; }
-    h.curlStart=null; h.curlDragStarted=false;
-    return;
+  if(tapState==='idle'||tapState==='cool'){
+    if(vel>V_HIGH){ tapState='moving'; movingFrames=1; }
   }
-
-  // ── Inizio piega ──
-  if(justCurled){
-    h.curlStart = Date.now();
-    h.curlDragStarted = false;
-  }
-
-  // ── Mantenuta piegata ──
-  if(isCurled && h.curlStart){
-    const held = Date.now() - h.curlStart;
-
-    // Drag: piega tenuta > 500ms
-    if(held > 500 && !h.curlDragStarted && !h.dragging){
-      h.curlDragStarted = true;
-      h.dragging = true;
-      socket.emit('drag_start', {x:clamp01(mx), y:clamp01(my)});
-      h.cursor.classList.add('dragging');
-      flashEl('drag');
-      setHact('🟠 DRAG');
-    }
-
-    if(h.dragging){
-      socket.emit('move_drag', {x:clamp01(mx), y:clamp01(my)});
+  else if(tapState==='moving'){
+    if(vel>V_HIGH){ movingFrames++; }
+    else if(vel<V_STOP && movingFrames>=2){
+      tapState='stopped'; stoppedAt=Date.now();
+    } else if(vel<V_STOP){
+      tapState='idle';
     }
   }
-
-  // ── Fine piega (raddrizza dito) ──
-  if(justStraight){
-    if(h.dragging){
-      // Fine drag
-      socket.emit('drag_end', {});
-      h.dragging = false;
-      h.curlDragStarted = false;
-      h.cursor.classList.remove('dragging');
-      flashEl('drag');
-      setHact('drag end');
-    } else if(h.curlStart && !h.clickCool){
-      // Click — era una piega breve
-      const now = Date.now();
-      const isDouble = (now - h.lastClickTime) < 400;
-      h.lastClickTime = now;
-      h.curlStart = null;
-      fireClick(h, mx, my, isDouble);
+  else if(tapState==='stopped'){
+    const dur=Date.now()-stoppedAt;
+    if(vel>V_HIGH){
+      // si è rimosso → era un tocco se lo stop è durato abbastanza
+      if(dur>=STOP_CONFIRM_MS && !clickCool){
+        fireClick(mx,my);
+        tapState='cool'; stoppedAt=null; movingFrames=0;
+      } else {
+        tapState='moving'; movingFrames=1;
+      }
+    } else if(vel<V_STOP && dur>DRAG_HOLD_MS && !clickCool){
+      tapState='drag';
+      socket.emit('drag_start',{x:cl01(mx),y:cl01(my)});
+      doFlash('dr'); setState('🟠 DRAG','orange');
+      cur.className='dragging';
     }
-    h.curlStart = null;
+  }
+  else if(tapState==='drag'){
+    socket.emit('move_drag',{x:cl01(mx),y:cl01(my)});
+    if(vel>V_HIGH*2){
+      socket.emit('drag_end',{}); tapState='moving'; movingFrames=1;
+      cur.className='moving'; doFlash('dr');
+    }
   }
 }
 
-// ══════════════════════════════════════════════════════
-//  DWELL MODE
-// ══════════════════════════════════════════════════════
-const DWELL_MS=1100, DWELL_MOV=0.028;
-
-function processDwell(h, rawX, rawY, mx, my, inScreen){
-  const ring=h.ring, arc=ring.querySelector('.darc');
-  if(!inScreen){
-    h.dwellStart=null; ring.style.display='none';
-    return;
-  }
-
-  // Doppio click in dwell: due dwell ravvicinati (< 400ms cooldown finito)
-  if(h.dwellStart===null){
-    h.dwellStart=Date.now(); h.dwellLX=rawX; h.dwellLY=rawY;
-  }
-  const moved=Math.hypot(rawX-h.dwellLX, rawY-h.dwellLY);
-  if(moved>DWELL_MOV){
-    // Se si muove durante il dwell → drag
-    if(h.dragging){
-      socket.emit('move_drag',{x:clamp01(mx),y:clamp01(my)});
-    } else if(h.dwellStart && (Date.now()-h.dwellStart)>600){
-      // Stava per completare il dwell ma si è mosso → drag start
-      h.dragging=true;
-      socket.emit('drag_start',{x:clamp01(mx),y:clamp01(my)});
-      h.cursor.classList.add('dragging');
-      flashEl('drag');
-    } else {
-      h.dwellStart=Date.now(); h.dwellLX=rawX; h.dwellLY=rawY;
-      ring.style.display='none';
-    }
-    return;
-  }
-
-  if(h.dragging){
-    // Fermo → fine drag
-    socket.emit('drag_end',{});
-    h.dragging=false;
-    h.cursor.classList.remove('dragging');
-    ring.style.display='none';
-    return;
-  }
-
-  const pct=Math.min(1,(Date.now()-h.dwellStart)/DWELL_MS);
-  ring.style.display='block';
-  ring.style.left=(rawX*100)+'%';
-  ring.style.top=(rawY*100)+'%';
-  arc.style.strokeDashoffset=132*(1-pct);
-
-  if(pct>=1 && !h.dwellCool){
-    h.dwellCool=true;
-    ring.style.display='none';
-    const now=Date.now();
-    const isDouble=(now-h.lastClickTime)<500;
-    h.lastClickTime=now;
-    fireClick(h,mx,my,isDouble);
-    setTimeout(()=>{ h.dwellCool=false; h.dwellStart=null; },750);
-  }
-}
-
-// ══════════════════════════════════════════════════════
-//  FIRE CLICK + FEEDBACK
-// ══════════════════════════════════════════════════════
-function fireClick(h, mx, my, isDouble){
-  if(h.clickCool) return;
-  const cx=clamp01(mx), cy=clamp01(my);
-  h.clickCool=true;
+// ── FIRE CLICK ──────────────────────────────────────────────
+function fireClick(mx,my){
+  if(clickCool) return;
+  clickCool=true;
+  const now=Date.now(), isDouble=(now-lastClickT)<400;
+  lastClickT=now;
+  const cx=cl01(mx),cy=cl01(my);
   socket.emit('move',{x:cx,y:cy});
   if(isDouble){
     socket.emit('double_click',{x:cx,y:cy});
-    flashEl('dbl'); setHact('⚡ DBL CLICK');
+    doFlash('d'); setState('⚡ DOPPIO','blue');
   } else {
     socket.emit('click',{button:'left',x:cx,y:cy});
-    flashEl('click'); setHact('✅ CLICK');
+    doFlash('c'); setState('✅ CLICK','green');
   }
-  h.cursor.classList.add('clicked');
-  setTimeout(()=>{ h.cursor.classList.remove('clicked'); h.clickCool=false; }, 300);
+  cur.className='clicked';
+  setTimeout(()=>{ cur.className=''; clickCool=false; setState('☝️ muovi'); },300);
 }
 
-const flashDiv=document.getElementById('flash');
-let flashTimer=null;
-function flashEl(type){
-  if(flashTimer) clearTimeout(flashTimer);
-  flashDiv.className=type;
-  flashTimer=setTimeout(()=>{ flashDiv.className=''; },150);
-}
+const flash=document.getElementById('flash');
+const cur=document.getElementById('cur');
+let ft=null;
+function doFlash(t){ if(ft) clearTimeout(ft); flash.className=t; ft=setTimeout(()=>{ flash.className=''; },140); }
+function setState(txt,cls=''){ const e=document.getElementById('hstate'); e.textContent=txt; e.className='hb'+(cls?' '+cls:''); }
 
-function setHact(txt){ document.getElementById('hact').textContent=txt; }
-
-// ══════════════════════════════════════════════════════
-//  CALIBRAZIONE
-// ══════════════════════════════════════════════════════
+// ── CALIBRAZIONE ────────────────────────────────────────────
 const CORNERS=['Top-Left ↖','Top-Right ↗','Bottom-Right ↘','Bottom-Left ↙'];
 const CEMO=['↖','↗','↘','↙'];
 let calibPts=[],H=null,appState='start',holdStart=null;
 const HOLD_MS=1500;
 
 function startCalib(){
-  calibPts=[]; H=null; appState='calibrating';
-  hands2.forEach(h=>resetHS(h));
+  calibPts=[]; H=null; appState='calibrating'; resetAll();
   for(let i=0;i<4;i++){
     const c=document.getElementById('cm-'+i);
     c.style.display='flex'; c.className='cm cm-w';
@@ -554,21 +317,22 @@ function startCalib(){
   document.getElementById('hold-wrap').style.display='block';
   document.getElementById('sg').style.display='block';
   document.getElementById('hud').style.display='none';
-  hands2.forEach(h=>{ h.cursor.style.display='none'; h.ring.style.display='none'; h.meter.style.display='none'; });
+  cur.style.display='none';
+  document.getElementById('vbar-wrap').style.display='none';
   pill('state','yellow','⬤ Calibrazione');
   updateCalibUI();
 }
 function updateCalibUI(){
   const s=calibPts.length; if(s>=4){ finishCalib(); return; }
   for(let i=0;i<4;i++){
-    const cm=document.getElementById('cm-'+i), sd=document.getElementById('sd'+i);
-    if(i<s)       { cm.className='cm cm-d'; sd.className='sd done'; }
-    else if(i===s){ cm.className='cm cm-a'; sd.className='sd active'; }
-    else          { cm.className='cm cm-w'; sd.className='sd'; }
+    const cm=document.getElementById('cm-'+i),sd=document.getElementById('sd'+i);
+    if(i<s){cm.className='cm cm-d';sd.className='sd done';}
+    else if(i===s){cm.className='cm cm-a';sd.className='sd active';}
+    else{cm.className='cm cm-w';sd.className='sd';}
   }
   const el=document.getElementById('instr'); el.style.display='block';
   el.innerHTML=`<div style="font-size:28px;margin-bottom:4px">${CEMO[s]}</div>
-    Angolo <b>${CORNERS[s]}</b><br>
+    Angolo <b>${CORNERS[s]}</b> dello schermo PC<br>
     <span style="font-size:12px;color:#aaa;font-weight:normal">tieni il dito fermo 1.5 sec</span>`;
   document.getElementById('hold-fill').style.width='0%';
 }
@@ -580,31 +344,23 @@ function finishCalib(){
   document.getElementById('hold-wrap').style.display='none';
   document.getElementById('sg').style.display='none';
   document.getElementById('hud').style.display='flex';
+  document.getElementById('howto').style.display='block';
+  cur.style.display='block';
+  document.getElementById('vbar-wrap').style.display='block';
   document.getElementById('btn-recalib').style.display='flex';
-  document.getElementById('mode-row').style.display='flex';
-  document.getElementById('legend').style.display = mode==='curl'?'block':'none';
   for(let i=0;i<4;i++) document.getElementById('cm-'+i).className='cm cm-d';
-  hands2.forEach(h=>{ h.cursor.style.display='block'; h.meter.style.display='block'; });
-  pill('state','green','⬤ Attivo 👆');
+  pill('state','green','⬤ Attivo ☝️');
   setTimeout(()=>{ for(let i=0;i<4;i++) document.getElementById('cm-'+i).style.display='none'; },2000);
 }
 
-// ══════════════════════════════════════════════════════
-//  MEDIAPIPE
-// ══════════════════════════════════════════════════════
+// ── MEDIAPIPE ───────────────────────────────────────────────
 const video=document.getElementById('video');
-const canvas=document.getElementById('overlay-canvas');
+const canvas=document.getElementById('canvas');
 const ctx=canvas.getContext('2d');
-
-let hands2=[makeHS(0),makeHS(1)];
-hands2[1].cursor.style.display='none';
-hands2[1].ring.style.display='none';
-hands2[1].meter.style.display='none';
-document.getElementById('hg1').style.display='none';
 
 const mpH=new Hands({ locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
 mpH.setOptions({ maxNumHands:2, modelComplexity:1,
-  minDetectionConfidence:0.80, minTrackingConfidence:0.75 });
+  minDetectionConfidence:0.80, minTrackingConfidence:0.78 });
 mpH.onResults(onResults);
 
 let proc=false;
@@ -615,45 +371,24 @@ function frameLoop(){
   mpH.send({image:video}).then(()=>{ proc=false; }).catch(()=>{ proc=false; });
 }
 
-const HCOLS=['rgba(0,180,255,.55)','rgba(255,80,80,.55)'];
-const LCOLS=['rgba(108,99,255,.9)','rgba(255,80,80,.9)'];
-
 function onResults(results){
   canvas.width=video.videoWidth||canvas.offsetWidth;
   canvas.height=video.videoHeight||canvas.offsetHeight;
   ctx.clearRect(0,0,canvas.width,canvas.height);
+  const det=results.multiHandLandmarks||[];
 
-  const detected=results.multiHandLandmarks||[];
-  const nH=detected.length;
-
-  // Gestisci hands non presenti
-  for(let i=0;i<2;i++){
-    const active=i<nH;
-    if(!active && hands2[i].cursor.style.display!=='none'){
-      hands2[i].cursor.style.display='none';
-      document.getElementById('hg'+i).style.display='none';
-      resetHS(hands2[i]);
-    }
-    if(active && hands2[i].cursor.style.display==='none' && appState==='active'){
-      hands2[i].cursor.style.display='block';
-      document.getElementById('hg'+i).style.display='flex';
-    }
-  }
-
-  if(nH===0){
+  if(!det.length){
     if(appState==='calibrating'){ holdStart=null; document.getElementById('hold-fill').style.width='0%'; }
+    if(appState==='active'){ setState('👋 mano non vista'); resetAll(); }
     return;
   }
 
-  // ── CALIBRAZIONE ──
   if(appState==='calibrating'){
-    const lm=detected[0];
-    const rx=lm[8].x, ry=lm[8].y;
-    drawConnectors(ctx,lm,HAND_CONNECTIONS,{color:HCOLS[0],lineWidth:3});
+    const lm=det[0]; const rx=lm[8].x,ry=lm[8].y;
+    drawConnectors(ctx,lm,HAND_CONNECTIONS,{color:'rgba(0,180,255,.55)',lineWidth:3});
     drawLandmarks(ctx,lm,{color:'rgba(255,255,255,.8)',lineWidth:1,radius:3});
     ctx.beginPath(); ctx.arc(rx*canvas.width,ry*canvas.height,9,0,Math.PI*2);
     ctx.fillStyle='rgba(255,210,0,.9)'; ctx.fill();
-
     if(!holdStart) holdStart={t:Date.now(),x:rx,y:ry};
     else {
       const mv=Math.hypot(rx-holdStart.x,ry-holdStart.y);
@@ -668,94 +403,71 @@ function onResults(results){
   }
   if(appState!=='active'||!H) return;
 
-  // ── ACTIVE ──
-  for(let i=0;i<nH;i++){
-    const lm=detected[i];
-    const h=hands2[i];
+  // Disegna tutte le mani
+  det.forEach((lm,i)=>{
+    drawConnectors(ctx,lm,HAND_CONNECTIONS,{color:i===0?'rgba(0,180,255,.5)':'rgba(255,80,80,.5)',lineWidth:3});
+    drawLandmarks(ctx,lm,{color:'rgba(255,255,255,.65)',lineWidth:1,radius:3});
+  });
 
-    // Disegna mano
-    drawConnectors(ctx,lm,HAND_CONNECTIONS,{color:HCOLS[i],lineWidth:3});
-    drawLandmarks(ctx,lm,{color:'rgba(255,255,255,.7)',lineWidth:1,radius:3});
-    // Cerchio su indice
-    ctx.beginPath(); ctx.arc(lm[8].x*canvas.width,lm[8].y*canvas.height,7,0,Math.PI*2);
-    ctx.fillStyle=LCOLS[i]; ctx.fill();
+  const lm=det[0]; const tip=lm[8];
+  ctx.beginPath(); ctx.arc(tip.x*canvas.width,tip.y*canvas.height,9,0,Math.PI*2);
+  ctx.fillStyle='rgba(108,99,255,.9)'; ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,.9)'; ctx.lineWidth=2; ctx.stroke();
 
-    const rawX=lm[8].x, rawY=lm[8].y;
-    const [sx,sy]=h.smooth(rawX,rawY);
-    const [mx,my]=applyH(H,sx,sy);
-    const inScreen=mx>=-0.05&&mx<=1.05&&my>=-0.05&&my<=1.05;
-    const curl=getCurlScore(lm);
+  const vel=getVel(tip.x,tip.y);
+  const [sx,sy]=smoothPos(tip.x,tip.y);
+  const [mx,my]=applyH(H,sx,sy);
+  const inScreen=mx>=-0.05&&mx<=1.05&&my>=-0.05&&my<=1.05;
 
-    // Cursore
-    h.cursor.style.left=(rawX*100)+'%';
-    h.cursor.style.top=(rawY*100)+'%';
+  document.getElementById('hx').textContent=mx.toFixed(2);
+  document.getElementById('hy').textContent=my.toFixed(2);
 
-    if(i===0){
-      document.getElementById('hx').textContent=mx.toFixed(2);
-      document.getElementById('hy').textContent=my.toFixed(2);
-    }
+  cur.style.left=(tip.x*100)+'%';
+  cur.style.top=(tip.y*100)+'%';
 
-    // HUD stato mano
-    const hgEl=document.getElementById('hg'+i);
-    const curlPct=Math.round(curl*100);
-    hgEl.textContent=`${i===0?'☝️':'✌️'} ${curlPct}%`;
-    hgEl.className= curl>=CURL_THRESH ? 'hb warn' : (inScreen ? 'hb act' : 'hb');
+  if(inScreen && tapState!=='drag') socket.emit('move',{x:cl01(mx),y:cl01(my)});
 
-    // Hover
-    if(inScreen && !h.dragging){
-      socket.emit('move',{x:clamp01(mx),y:clamp01(my)});
-    }
-
-    if(mode==='curl'){
-      processCurl(h, curl, mx, my, inScreen);
-    } else {
-      processDwell(h, rawX, rawY, mx, my, inScreen);
-    }
+  if(tapState!=='drag'&&tapState!=='stopped'&&!clickCool){
+    cur.className=vel<V_STOP?'slow':vel>V_HIGH?'moving':'';
   }
+  if(tapState==='moving') setState(`⚡ vel:${vel.toFixed(3)}`,'yellow');
+  else if(tapState==='idle'||tapState==='cool') setState('☝️ muovi');
+
+  processTap(vel,mx,my,inScreen);
 }
 
-// ══════════════════════════════════════════════════════
-//  ZOOM
-// ══════════════════════════════════════════════════════
-let videoTrack=null, apiZoom=false;
-document.getElementById('zsl').addEventListener('input', async function(){
+// ── ZOOM ────────────────────────────────────────────────────
+let videoTrack=null,apiZoom=false;
+document.getElementById('zsl').addEventListener('input',async function(){
   const z=parseFloat(this.value);
   document.getElementById('zv').textContent=z.toFixed(2)+'×';
-  if(z<=1.0){
-    video.style.transform=`scale(${z})`;
+  if(z<=1){ video.style.transform=`scale(${z})`;
     if(apiZoom&&videoTrack){ try{await videoTrack.applyConstraints({advanced:[{zoom:1}]});}catch(e){} }
-  } else {
-    video.style.transform='scale(1)';
-    if(apiZoom&&videoTrack){ try{await videoTrack.applyConstraints({advanced:[{zoom:z}]});}catch(e){}; }
+  } else { video.style.transform='scale(1)';
+    if(apiZoom&&videoTrack){ try{await videoTrack.applyConstraints({advanced:[{zoom:z}]});}catch(e){} }
     else video.style.transform=`scale(${z})`;
   }
 });
 
-// ══════════════════════════════════════════════════════
-//  AVVIO CAMERA
-// ══════════════════════════════════════════════════════
+// ── AVVIO CAMERA ────────────────────────────────────────────
 async function startCamera(){
   const btn=document.getElementById('btn-start');
   btn.disabled=true; btn.textContent='⏳ Avvio...';
   let stream=null;
-
   try{
     const devs=await navigator.mediaDevices.enumerateDevices();
     const uw=devs.filter(d=>d.kind==='videoinput').find(c=>/ultra|wide|0\.6|gran/i.test(c.label));
     if(uw) stream=await navigator.mediaDevices.getUserMedia({video:{deviceId:{exact:uw.deviceId}}}).catch(()=>null);
   }catch(e){}
-
   if(!stream){
     for(const cfg of[{video:{facingMode:{exact:'environment'}}},{video:{facingMode:'environment'}},{video:{facingMode:'user'}},{video:true}]){
       try{ stream=await navigator.mediaDevices.getUserMedia(cfg); break; }catch(e){}
     }
   }
   if(!stream){ btn.disabled=false; btn.textContent='📷 Avvia Camera'; alert('Camera non disponibile'); return; }
-
   videoTrack=stream.getVideoTracks()[0];
   const caps=videoTrack.getCapabilities?videoTrack.getCapabilities():{};
-  if(caps.zoom){
-    apiZoom=true;
+  if(caps.zoom){ apiZoom=true;
     try{ await videoTrack.applyConstraints({advanced:[{zoom:caps.zoom.min||1}]}); }catch(e){}
     document.getElementById('zsl').max=caps.zoom.max||5;
   }
