@@ -25,7 +25,6 @@ def on_connect():
 def on_disconnect():
     pc_clients.discard(request.sid)
     phone_clients.discard(request.sid)
-    print(f'[DISCONNECT] {request.sid}')
 
 @socketio.on('register')
 def on_register(data):
@@ -41,21 +40,24 @@ def on_register(data):
 def relay(event, data):
     for s in list(pc_clients): emit(event, data, to=s)
 
-@socketio.on('move')         
-def on_move(d):        relay('move', d)
-@socketio.on('click')        
-def on_click(d):       relay('click', d)
-@socketio.on('double_click') 
-def on_dbl(d):         relay('double_click', d)
-@socketio.on('drag_start')   
-def on_ds(d):          relay('drag_start', d)
-@socketio.on('move_drag')    
-def on_md(d):          relay('move_drag', d)
-@socketio.on('drag_end')     
-def on_de(d):          relay('drag_end', d)
-@socketio.on('scroll')       
-def on_scroll(d):      relay('scroll', d)
+@socketio.on('move')        
+def _(d): relay('move', d)
+@socketio.on('click')       
+def _(d): relay('click', d)
+@socketio.on('mouse_down')  
+def _(d): relay('mouse_down', d)
+@socketio.on('mouse_up')    
+def _(d): relay('mouse_up', d)
+@socketio.on('move_drag')   
+def _(d): relay('move_drag', d)
+@socketio.on('drag_start')  
+def _(d): relay('drag_start', d)
+@socketio.on('drag_end')    
+def _(d): relay('drag_end', d)
+@socketio.on('scroll')      
+def _(d): relay('scroll', d)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    socketio.run(app, host='0.0.0.0', port=port, debug=False, allow_unsafe_werkzeug=True)
+    socketio.run(app, host='0.0.0.0', port=port,
+                 debug=False, allow_unsafe_werkzeug=True)

@@ -1,117 +1,100 @@
 """
-mouse-phone — PC Client (Touchpad mode)
-Riceve movimenti relativi dal telefono e muove il mouse.
+mouse-phone — PC Client (modalità cloud/Render)
+Uso: py pc_client.py https://mouse-phone.onrender.com
 
-Installazione:
-    pip install "python-socketio[client]" pyautogui
-
-Uso:
-    python pc_client.py
-    python pc_client.py https://il-tuo-server.onrender.com
+Per connessione locale usa local_server.py invece.
 """
-
-import sys
-import time
-import pyautogui
+import sys, time
 import socketio
+import pyautogui
 
 SERVER_URL = sys.argv[1] if len(sys.argv) > 1 else "https://mouse-phone.onrender.com"
-
-pyautogui.FAILSAFE = True   # angolo in alto a sinistra = stop emergenza
-pyautogui.PAUSE    = 0
-
+pyautogui.FAILSAFE = False
+pyautogui.PAUSE = 0
 W, H = pyautogui.size()
-print(f"🖥  Schermo: {W}x{H}")
-print(f"🌐  Server:  {SERVER_URL}")
-print(f"⚠️  Porta il mouse nell'angolo in alto a sinistra per fermare\n")
+print(f"🖥  Schermo: {W}x{H}  —  Server: {SERVER_URL}\n")
 
-sio = socketio.Client(reconnection=True, reconnection_attempts=0, logger=False)
+def sc(x,y): return max(0,min(W-1,int(float(x)*W))), max(0,min(H-1,int(float(y)*H)))
 
+sio = socketio.Client(reconnection=True, reconnection_attempts=0, logger=False, engineio_logger=False)
 
 @sio.event
 def connect():
-    print("✅ Connesso al server!")
-    sio.emit('register', {'role': 'pc'})
-
+    print("✅ Connesso!"); sio.emit('register',{'role':'pc'})
 
 @sio.event
 def disconnect():
-    print("❌ Disconnesso. Riconnessione...")
-
+    print("❌ Disconnesso...")
 
 @sio.on('registered')
-def on_registered(data):
-    print(f"📡 Registrato — {data.get('message', '')}")
-    print("📱 Apri l'URL del server sul telefono e inizia a usarlo!\n")
-
+def _(d): print(f"📡 {d.get('message','')}\n📱 In attesa del telefono...\n")
 
 @sio.on('phone_connected')
-def on_phone_connected(data):
-    print("📱 Telefono connesso!")
+def _(_): print("📱 Telefono connesso!\n")
 
-
-@sio.on('move_rel')
-def on_move_rel(data):
-    """Muove il mouse di un delta relativo."""
-    try:
-        dx = float(data['dx'])
-        dy = float(data['dy'])
-        x, y = pyautogui.position()
-        # Clamp dentro lo schermo
-        nx = max(0, min(W - 1, x + dx))
-        ny = max(0, min(H - 1, y + dy))
-        pyautogui.moveTo(int(nx), int(ny))
-    except Exception as e:
-        print(f"[MOVE ERR] {e}")
-
+@sio.on('move')
+def _(d):
+    try: x,y=sc(d['x'],d['y']); pyautogui.moveTo(x,y,_pause=False)
+    except: pass
 
 @sio.on('click')
-def on_click(data):
+def _(d):
     try:
-        button = data.get('button', 'left')
-        print(f"🖱  Click {button}")
-        pyautogui.click(button=button)
-    except Exception as e:
-        print(f"[CLICK ERR] {e}")
+        x,y=sc(d['x'],d['y']); btn=d.get('button','left')
+        pyautogui.moveTo(x,y,_pause=False); time.sleep(0.03)
+        pyautogui.click(x,y,button=btn,_pause=False)
+        print(f"🖱  Click {btn} ({x},{y})")
+    except: pass
 
-
-@sio.on('double_click')
-def on_double_click(data):
+@sio.on('mouse_down')
+def _(d):
     try:
-        print("🖱  Doppio click")
-        pyautogui.doubleClick()
-    except Exception as e:
-        print(f"[DBLCLICK ERR] {e}")
+        x,y=sc(d['x'],d['y'])
+        pyautogui.moveTo(x,y,_pause=False); time.sleep(0.03)
+        pyautogui.mouseDown(x,y,button='left',_pause=False)
+        print(f"🖱  MouseDown ({x},{y})")
+    except: pass
 
+@sio.on('mouse_up')
+def _(d):
+    try: pyautogui.mouseUp(button='left',_pause=False); print("🖱  MouseUp")
+    except: pass
+
+@sio.on('move_drag')
+def _(d):
+    try: x,y=sc(d['x'],d['y']); pyautogui.moveTo(x,y,_pause=False)
+    except: pass
+
+@sio.on('drag_start')
+def _(d):
+    try:
+        x,y=sc(d['x'],d['y'])
+        pyautogui.moveTo(x,y,_pause=False); time.sleep(0.03)
+        pyautogui.mouseDown(x,y,button='left',_pause=False)
+        print(f"🟠 Drag start ({x},{y})")
+    except: pass
+
+@sio.on('drag_end')
+def _(d):
+    try: pyautogui.mouseUp(button='left',_pause=False); print("🟠 Drag end")
+    except: pass
 
 @sio.on('scroll')
-def on_scroll(data):
+def _(d):
     try:
-        delta = int(data.get('delta', 0))
-        clicks = -delta // 30
-        if clicks != 0:
-            pyautogui.scroll(clicks)
-    except Exception as e:
-        print(f"[SCROLL ERR] {e}")
-
+        clicks=-(int(d.get('delta',0))//30)
+        if clicks: pyautogui.scroll(clicks)
+    except: pass
 
 def main():
-    print("=" * 45)
-    print("    🖱  MOUSE PHONE — PC Client")
-    print("=" * 45 + "\n")
+    print("="*50+"\n     🖱  MOUSE PHONE — PC Client\n"+"="*50+"\n")
     while True:
         try:
             print(f"Connessione a {SERVER_URL}...")
-            sio.connect(SERVER_URL, transports=['websocket'])
-            sio.wait()
+            sio.connect(SERVER_URL,transports=['websocket']); sio.wait()
         except KeyboardInterrupt:
-            print("\n👋 Uscita.")
-            sio.disconnect()
-            break
+            print("\n👋 Uscita."); sio.disconnect(); break
         except Exception as e:
-            print(f"[ERRORE] {e} — riprovo tra 5s...")
-            time.sleep(5)
+            print(f"[ERRORE] {e}\nRiprovo tra 5s..."); time.sleep(5)
 
-
-if __name__ == '__main__':
-    main()
+if __name__=='__main__': main()
